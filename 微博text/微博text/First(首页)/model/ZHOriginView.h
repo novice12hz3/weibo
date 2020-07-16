@@ -26,6 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak) UIImageView *picView1;//配图1
 @property (nonatomic, weak) UIImageView *picView2;//配图2
 @property (nonatomic, weak) UIImageView *picView3;//配图3
+@property (nonatomic, weak) UIImage *image;
 @property (nonatomic, weak) UIButton *collectbtn;//收藏按钮
 @property (nonatomic, strong) NSArray *collectArray;//收藏数组
 @property (nonatomic, strong) NSMutableArray *collecttemp;//临时收藏数组

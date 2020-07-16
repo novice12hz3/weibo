@@ -13,10 +13,11 @@
 #import "ZHcollectVc.h"
 #import "ZHHisitoryVc.h"
 #import "ZHsearchTabVc.h"
+#import "AFNetworking.h"
 @interface ZHFirstVc ()<UISearchBarDelegate>
 @property(nonatomic,strong) ZHStatus *status;
 @property(nonatomic,strong) NSMutableArray *statusArray;
-@property(nonatomic,strong) NSArray *dictArry;
+@property(nonatomic,strong) NSMutableArray *dictArry;
 @property(nonatomic,strong) ZHTableViewCell *cell;
 @property(nonatomic,strong) NSArray *collectArray;
 @property(nonatomic,strong) NSArray *historyArray;
@@ -29,9 +30,12 @@
 
 @implementation ZHFirstVc
 
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setupNavgationerBar];
+    
     
     _zhsearchtabVc = [[ZHsearchTabVc alloc]init];
     [_zhsearchtabVc.view addSubview:nil];//调用了view，viewdidload同时也调用了(解决第一次搜索要点2次的bug)
@@ -43,35 +47,28 @@
     dict = [NSDictionary dictionaryWithContentsOfFile:filePath];
     
 //    NSString *access_token = dict[@"access_token"];//2.00HZCsbG0PLui2910aa110350RA6et
-    NSString *access_token = @"2.00HZCsbG0PLui2910aa110350RA6et";
+//    NSString *access_token = @"2.00HZCsbG0PLui2910aa110350RA6et";
 
-//    NSString *uid = dict[@"uid"];
-    //获取微博数据
-    NSString *urlstr = [NSString stringWithFormat:@"https://api.weibo.com/2/statuses/home_timeline.json?access_token=%@",access_token];
-    NSURL *url = [NSURL URLWithString:urlstr];
-    //2创建请求对象
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+
+    NSString *str = [NSString stringWithFormat:@"https://api.weibo.com/2/statuses/home_timeline.json?"];
+    NSDictionary *dictionary = @{
+                           @"access_token":@"2.00HZCsbG0PLui2910aa110350RA6et"
+                           };
+
+    [self AFNget:str dict:dictionary];
     
-    //3发送请求
-    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-    NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-   
-    //将字典数组转模型
-    _dictArry = dictionary[@"statuses"];
-    NSMutableArray *temp=[NSMutableArray array];//临时数组
-    for (NSDictionary *dict in _dictArry) {
-        ZHStatus *statuses = [ZHStatus statuseswithDict:dict];
-        //模型存入临时数组
-        [temp addObject:statuses];
-    }
-    //临时数组转数组
-    _statusArray = temp;
-   
-    self.tableView.dataSource = self;
+//    [NSTimer scheduledTimerWithTimeInterval:2.0 repeats:NO block:^(NSTimer * _Nonnull timer) {
+//        [self AFNget:str dict:dictionary];
+//        NSLog(@"%@",self.dictArry);
+//        [self.tableView reloadData];
+//    }];
     
-    self.tableView.delegate = self;
-    //刷新tableview的内容
-    [self.tableView reloadData];
+//    NSString *path1 = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask , YES)[0];
+//    NSString *filepath = [path1 stringByAppendingPathComponent:@"Status.data"];
+//    NSData *statusdata = [NSData dataWithContentsOfFile:filepath];
+//    self.statusArray = [NSKeyedUnarchiver unarchiveObjectWithData:statusdata];
+//    NSLog(@"%lu",_statusArray.count);
+//
     
     
     //搜索
@@ -85,6 +82,8 @@
     searchBar.delegate = self;
     //拖拽隐藏键盘
     self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
+    
+    [self.tableView reloadData];
    
 }
 
@@ -96,6 +95,44 @@
 //    [btn sizeToFit];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
 }
+#pragma mark 网络请求
+- (void)AFNget:(NSString *)string dict:(NSDictionary *)dict{
+    //1创建队列
+    dispatch_queue_t queue = dispatch_queue_create("队列", DISPATCH_QUEUE_CONCURRENT);
+    //2封装任务
+    dispatch_async(queue, ^{
+        
+        NSLog(@"%@",[NSThread currentThread]);
+        
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        [manager GET:string parameters:dict headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            self.dictArry = responseObject[@"statuses"];
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            NSLog(@"请求失败");
+        }];
+        //将字典数组转模型
+        NSMutableArray *temp=[NSMutableArray array];//临时数组
+        for (NSDictionary *dict in self.dictArry) {
+            ZHStatus *statuses = [ZHStatus statuseswithDict:dict];
+            //模型存入临时数组
+            [temp addObject:statuses];
+        }
+        //临时数组转数组
+        self.statusArray = temp;
+    });
+
+    
+//    //储存微博
+//    NSString *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask , YES)[0];
+//    NSString *filepath = [path stringByAppendingPathComponent:@"Status.data"];
+//    NSLog(@"%@",filepath);
+//    NSData *statusdata = [NSKeyedArchiver archivedDataWithRootObject:self.statusArray];
+//    [statusdata writeToFile:filepath atomically:YES];
+    
+    
+    
+}
+
 # pragma mark searchBar delegate
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
         NSString *searchtext = searchBar.text;
@@ -126,36 +163,25 @@
 
 # pragma mark 右上角刷新按钮
 -(void)refresh{
-    NSString *access_token = [NSString stringWithFormat:@"2.00HZCsbG0PLui2910aa110350RA6et"];
-    //    NSString *uid = [NSString stringWithFormat:@"6056401001"];
-    //获取微博数据
-    NSString *urlstr = [NSString stringWithFormat:@"https://api.weibo.com/2/statuses/home_timeline.json?access_token=%@",access_token];
-    NSURL *url = [NSURL URLWithString:urlstr];
-    //2创建请求对象
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    NSString *str = [NSString stringWithFormat:@"https://api.weibo.com/2/statuses/home_timeline.json?"];
+    NSDictionary *dictionary = @{
+                                 @"access_token":@"2.00HZCsbG0PLui2910aa110350RA6et"
+                                 };
     
-    //3发送请求
-    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-    NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-    
-    //将字典数组转模型
-   _dictArry = dictionary[@"statuses"];
-    NSMutableArray *temp=[NSMutableArray array];//临时数组
-    for (NSDictionary *dict in _dictArry) {
-        ZHStatus *status = [ZHStatus statuseswithDict:dict];
-        //模型存入临时数组
-        [temp addObject:status];
-    }
-    //临时数组转数组
-    _statusArray = temp;
-    
+    [self AFNget:str dict:dictionary];
     [self.tableView reloadData];
+    
 }
 
 
 #pragma mark - Table view data source
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return self.statusArray.count;
+//    NSLog(@"222");
+//    if (self.statusArray.count == 0) {
+//        return 1;
+//    }else{
+        return self.statusArray.count;
+//    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -202,61 +228,4 @@
     [[NSNotificationCenter defaultCenter]postNotification:note];
     
 }
-
-
-
-/*
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
-    
-    // Configure the cell...
-    
-    return cell;
-}
-*/
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
 @end

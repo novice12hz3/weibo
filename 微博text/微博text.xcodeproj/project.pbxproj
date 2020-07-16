@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E204E5D224BD569F00964BBD /* AFURLResponseSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = E204E5C824BD569F00964BBD /* AFURLResponseSerialization.m */; };
+		E204E5D324BD569F00964BBD /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E204E5C924BD569F00964BBD /* AFHTTPSessionManager.m */; };
+		E204E5D424BD569F00964BBD /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E204E5CB24BD569F00964BBD /* AFURLSessionManager.m */; };
+		E204E5D524BD569F00964BBD /* AFURLRequestSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = E204E5CC24BD569F00964BBD /* AFURLRequestSerialization.m */; };
+		E204E5D624BD569F00964BBD /* AFNetworkReachabilityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E204E5CE24BD569F00964BBD /* AFNetworkReachabilityManager.m */; };
+		E204E5D724BD569F00964BBD /* AFSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = E204E5CF24BD569F00964BBD /* AFSecurityPolicy.m */; };
 		E2932877247575FD00013405 /* ZHTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E2932876247575FD00013405 /* ZHTableViewCell.m */; };
 		E293287A2475779F00013405 /* ZHOriginView.m in Sources */ = {isa = PBXBuildFile; fileRef = E29328792475779F00013405 /* ZHOriginView.m */; };
 		E297448E24826A9C00A30CEC /* ZHHisitoryVc.m in Sources */ = {isa = PBXBuildFile; fileRef = E297448D24826A9C00A30CEC /* ZHHisitoryVc.m */; };
@@ -46,6 +52,20 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E204E5C424BD569F00964BBD /* AFSecurityPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFSecurityPolicy.h; sourceTree = "<group>"; };
+		E204E5C524BD569F00964BBD /* AFNetworkReachabilityManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkReachabilityManager.h; sourceTree = "<group>"; };
+		E204E5C624BD569F00964BBD /* AFURLSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLSessionManager.h; sourceTree = "<group>"; };
+		E204E5C724BD569F00964BBD /* AFURLRequestSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLRequestSerialization.h; sourceTree = "<group>"; };
+		E204E5C824BD569F00964BBD /* AFURLResponseSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLResponseSerialization.m; sourceTree = "<group>"; };
+		E204E5C924BD569F00964BBD /* AFHTTPSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPSessionManager.m; sourceTree = "<group>"; };
+		E204E5CA24BD569F00964BBD /* AFURLResponseSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLResponseSerialization.h; sourceTree = "<group>"; };
+		E204E5CB24BD569F00964BBD /* AFURLSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLSessionManager.m; sourceTree = "<group>"; };
+		E204E5CC24BD569F00964BBD /* AFURLRequestSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLRequestSerialization.m; sourceTree = "<group>"; };
+		E204E5CD24BD569F00964BBD /* AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworking.h; sourceTree = "<group>"; };
+		E204E5CE24BD569F00964BBD /* AFNetworkReachabilityManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkReachabilityManager.m; sourceTree = "<group>"; };
+		E204E5CF24BD569F00964BBD /* AFSecurityPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFSecurityPolicy.m; sourceTree = "<group>"; };
+		E204E5D024BD569F00964BBD /* AFCompatibilityMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFCompatibilityMacros.h; sourceTree = "<group>"; };
+		E204E5D124BD569F00964BBD /* AFHTTPSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPSessionManager.h; sourceTree = "<group>"; };
 		E2932875247575FD00013405 /* ZHTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZHTableViewCell.h; sourceTree = "<group>"; };
 		E2932876247575FD00013405 /* ZHTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZHTableViewCell.m; sourceTree = "<group>"; };
 		E29328782475779F00013405 /* ZHOriginView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZHOriginView.h; sourceTree = "<group>"; };
@@ -112,6 +132,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E204E5C324BD569F00964BBD /* AFNetworking */ = {
+			isa = PBXGroup;
+			children = (
+				E204E5C424BD569F00964BBD /* AFSecurityPolicy.h */,
+				E204E5C524BD569F00964BBD /* AFNetworkReachabilityManager.h */,
+				E204E5C624BD569F00964BBD /* AFURLSessionManager.h */,
+				E204E5C724BD569F00964BBD /* AFURLRequestSerialization.h */,
+				E204E5C824BD569F00964BBD /* AFURLResponseSerialization.m */,
+				E204E5C924BD569F00964BBD /* AFHTTPSessionManager.m */,
+				E204E5CA24BD569F00964BBD /* AFURLResponseSerialization.h */,
+				E204E5CB24BD569F00964BBD /* AFURLSessionManager.m */,
+				E204E5CC24BD569F00964BBD /* AFURLRequestSerialization.m */,
+				E204E5CD24BD569F00964BBD /* AFNetworking.h */,
+				E204E5CE24BD569F00964BBD /* AFNetworkReachabilityManager.m */,
+				E204E5CF24BD569F00964BBD /* AFSecurityPolicy.m */,
+				E204E5D024BD569F00964BBD /* AFCompatibilityMacros.h */,
+				E204E5D124BD569F00964BBD /* AFHTTPSessionManager.h */,
+			);
+			path = AFNetworking;
+			sourceTree = "<group>";
+		};
 		E29C26C12469A5C500AC8682 /* model */ = {
 			isa = PBXGroup;
 			children = (
@@ -184,6 +225,7 @@
 				E2C4D09F2462D3A600D66572 /* 微博textUITests */,
 				E2C4D0A22462D3A600D66572 /* Info.plist */,
 				E2C4D07A2462D3A400D66572 /* Products */,
+				E204E5C324BD569F00964BBD /* AFNetworking */,
 			);
 			sourceTree = "<group>";
 		};
@@ -409,18 +451,24 @@
 			files = (
 				E29E30D024644C0B0069130C /* ZHMeVc.m in Sources */,
 				E2932877247575FD00013405 /* ZHTableViewCell.m in Sources */,
+				E204E5D624BD569F00964BBD /* AFNetworkReachabilityManager.m in Sources */,
 				E297448E24826A9C00A30CEC /* ZHHisitoryVc.m in Sources */,
 				E2C4D08C2462D3A600D66572 /* main.m in Sources */,
 				E29E30C42463BC920069130C /* ZHFirstVc.m in Sources */,
 				E2AAC64E246ED7B600D05916 /* ZHAccount.m in Sources */,
+				E204E5D724BD569F00964BBD /* AFSecurityPolicy.m in Sources */,
 				E29E30D624644DCF0069130C /* ZHWriteVc.m in Sources */,
 				E2D215C52485202C00660ABA /* ZHsearchTabVc.m in Sources */,
 				E2C4D0B12462F93400D66572 /* ZHTabBarController.m in Sources */,
+				E204E5D424BD569F00964BBD /* AFURLSessionManager.m in Sources */,
 				E2B0A80824810B1200E8F8A7 /* ZHcollectVc.m in Sources */,
 				E2B1FD872465A7E700D96988 /* ZHOAuthvc.m in Sources */,
+				E204E5D524BD569F00964BBD /* AFURLRequestSerialization.m in Sources */,
 				E2AAC64A246ED18A00D05916 /* ZHStatus.m in Sources */,
 				E29E30D92464531F0069130C /* ZHWriteTextView.m in Sources */,
 				E2C4D07E2462D3A400D66572 /* AppDelegate.m in Sources */,
+				E204E5D224BD569F00964BBD /* AFURLResponseSerialization.m in Sources */,
+				E204E5D324BD569F00964BBD /* AFHTTPSessionManager.m in Sources */,
 				E293287A2475779F00013405 /* ZHOriginView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -586,6 +634,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = "微博text/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -602,6 +651,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = "微博text/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

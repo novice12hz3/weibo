@@ -48,19 +48,34 @@
         originView.textView.text = _status.text;
     }
     if (_status.pic_urls.count>=1 ) {
-        NSDictionary *dict = _status.pic_urls[0];
-        NSString *picstr1 = dict[@"thumbnail_pic"];
-        originView.picView1.image = [self getthuimage:picstr1];
+        
+        dispatch_queue_t queue = dispatch_queue_create("下载图片1", DISPATCH_QUEUE_CONCURRENT);
+        dispatch_async(queue, ^{
+            NSDictionary *dict = self.status.pic_urls[0];
+            NSString *picstr1 = dict[@"thumbnail_pic"];
+            originView.image = [self getthuimage:picstr1];
+        });
+        originView.picView1.image = originView.image;
     }
-    if (_status.pic_urls.count>=2) {
-        NSDictionary *dict = _status.pic_urls[1];
-        NSString *picstr2 = dict[@"thumbnail_pic"];
-         originView.picView2.image = [self getthuimage:picstr2];
+    if (_status.pic_urls.count>=2){
+        dispatch_queue_t queue = dispatch_queue_create("下载图片2", DISPATCH_QUEUE_CONCURRENT);
+        dispatch_async(queue, ^{
+            NSDictionary *dict = self.status.pic_urls[1];
+            NSString *picstr2 = dict[@"thumbnail_pic"];
+            originView.image = [self getthuimage:picstr2];
+        
+        });
+            originView.picView2.image = originView.image;
     }
     if (_status.pic_urls.count>=3) {
-        NSDictionary *dict = _status.pic_urls[2];
-        NSString *picstr3 = dict[@"thumbnail_pic"];
-        originView.picView3.image = [self getthuimage:picstr3];
+        dispatch_queue_t queue = dispatch_queue_create("下载图片3", DISPATCH_QUEUE_CONCURRENT);
+        dispatch_async(queue, ^{
+            NSDictionary *dict = self.status.pic_urls[2];
+            NSString *picstr3 = dict[@"thumbnail_pic"];
+            
+            originView.image = [self getthuimage:picstr3];
+        });
+       originView.picView3.image =  originView.image;
     }
     _originView = originView;
     [self addSubview:originView];
