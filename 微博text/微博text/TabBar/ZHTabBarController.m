@@ -20,6 +20,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     //子控制器
+    
+  
     //首页
     ZHFirstVc *first = [[ZHFirstVc alloc]init];
     [self getChildrenvc:first image:[UIImage imageNamed:@"first"] selectedimage:[UIImage imageNamed:@"first d"] title:@"首页"];
@@ -35,6 +37,7 @@
     //个人主页
     ZHMeVc *me = [[ZHMeVc alloc]init];
     [self getChildrenvc:me image:[UIImage imageNamed:@"me"] selectedimage:[UIImage imageNamed:@"me d"] title:@"我"];
+    
 
     
 }

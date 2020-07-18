@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,strong) NSString *imageString;
 @property(nonatomic,strong) ZHOriginView *originView;
 @property(nonatomic,strong) ZHcollectVc  *zhcollectVc;
+@property(nonatomic,strong) NSMutableArray *imageArray;
 - (instancetype)setUpAllChildView;
 @end
 

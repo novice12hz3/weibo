@@ -17,6 +17,14 @@
     status.comments_count = comments_count;
     NSString *praise_count = dict[@"attitudes_count"];
     status.praise_count = praise_count;
+//    NSLog(@"%@",status.thumbnail_pic);
+    status.icon = status.thumbnail_pic;
+
+    //    if (status.pic_urls) {
+//        NSDictionary *dict1 = status.pic_urls[0];
+//        status.icon = dict1[@"thumbnail_pic"];
+//    }
+    
     return status;
 }
 #pragma mark 将没赋值的属性跳过

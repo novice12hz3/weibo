@@ -25,6 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,copy) NSString *thumbnail_pic;//略缩图片地址
 @property(nonatomic,copy) NSString *original_pic;//略缩图片地址
 @property(nonatomic,copy) NSDictionary *user;//使用者
+@property(nonatomic,strong) NSString *icon;
 @property(nonatomic,assign) NSString *comments_count;//评论数
 @property(nonatomic,assign) NSString *reposts_count;//转发数
 @property(nonatomic,assign) NSString *praise_count;//点赞数

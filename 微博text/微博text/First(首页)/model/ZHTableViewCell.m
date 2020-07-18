@@ -43,42 +43,61 @@
     //点赞数
     originView.praiselabel.text = [NSString stringWithFormat:@"%@",_status.praise_count];
     //配图
-    if (_status.pic_urls.count==0) {
-        originView.textView.frame = CGRectMake(0, 50, 414, 200);
-        originView.textView.text = _status.text;
-    }
-    if (_status.pic_urls.count>=1 ) {
+//    originView.picView1.image = _imageArray[0];
+//    originView.picView2.image = _imageArray[1];
+//    originView.picView2.image = _imageArray[2];
+    if (_imageArray) {
+            originView.picView1.image = _imageArray[0];
+            originView.picView2.image = _imageArray[1];
+            originView.picView2.image = _imageArray[2];
+    }else{
+    
+        if (_status.pic_urls.count==0) {
+            originView.textView.frame = CGRectMake(0, 50, 414, 200);
+            originView.textView.text = _status.text;
+        }
+        if (_status.pic_urls.count>=1 ) {
+            dispatch_queue_t queue = dispatch_queue_create("下载图片1", DISPATCH_QUEUE_CONCURRENT);
+            dispatch_async(queue, ^{
+                NSDictionary *dict = self.status.pic_urls[0];
+                NSString *picstr1 = dict[@"thumbnail_pic"];
+                originView.image = [self getthuimage:picstr1];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    originView.picView1.image = originView.image;
+                    [self.imageArray addObject:originView.picView1.image];
+                });
+            });
+        }
+        if (_status.pic_urls.count>=2){
+            dispatch_queue_t queue = dispatch_queue_create("下载图片2", DISPATCH_QUEUE_CONCURRENT);
+            dispatch_async(queue, ^{
+                NSDictionary *dict = self.status.pic_urls[1];
+                NSString *picstr2 = dict[@"thumbnail_pic"];
+                originView.image = [self getthuimage:picstr2];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    originView.picView2.image = originView.image;
+                    [self.imageArray addObject:originView.picView2.image];
+                });
+            });
+        }
+        if (_status.pic_urls.count>=3) {
+            dispatch_queue_t queue = dispatch_queue_create("下载图片3", DISPATCH_QUEUE_CONCURRENT);
+            dispatch_async(queue, ^{
+                NSDictionary *dict = self.status.pic_urls[2];
+                NSString *picstr3 = dict[@"thumbnail_pic"];
+                originView.image = [self getthuimage:picstr3];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    originView.picView3.image =  originView.image;
+                    [self.imageArray addObject:originView.picView3.image];
+                });
+            });
+        }
         
-        dispatch_queue_t queue = dispatch_queue_create("下载图片1", DISPATCH_QUEUE_CONCURRENT);
-        dispatch_async(queue, ^{
-            NSDictionary *dict = self.status.pic_urls[0];
-            NSString *picstr1 = dict[@"thumbnail_pic"];
-            originView.image = [self getthuimage:picstr1];
-        });
-        originView.picView1.image = originView.image;
     }
-    if (_status.pic_urls.count>=2){
-        dispatch_queue_t queue = dispatch_queue_create("下载图片2", DISPATCH_QUEUE_CONCURRENT);
-        dispatch_async(queue, ^{
-            NSDictionary *dict = self.status.pic_urls[1];
-            NSString *picstr2 = dict[@"thumbnail_pic"];
-            originView.image = [self getthuimage:picstr2];
-        
-        });
-            originView.picView2.image = originView.image;
-    }
-    if (_status.pic_urls.count>=3) {
-        dispatch_queue_t queue = dispatch_queue_create("下载图片3", DISPATCH_QUEUE_CONCURRENT);
-        dispatch_async(queue, ^{
-            NSDictionary *dict = self.status.pic_urls[2];
-            NSString *picstr3 = dict[@"thumbnail_pic"];
-            
-            originView.image = [self getthuimage:picstr3];
-        });
-       originView.picView3.image =  originView.image;
-    }
+    
+
     _originView = originView;
-    [self addSubview:originView];
+    [self addSubview:_originView];
     
 //    //监听收藏按钮
     [originView.collectbtn addTarget:self action:@selector(collect) forControlEvents:UIControlEventTouchUpInside];
@@ -88,9 +107,25 @@
 }
 #pragma mark 根据网络地址请求网络图片
 - (UIImage *)getthuimage:(NSString *)imageString{
-    NSURL *imageurl = [NSURL URLWithString:imageString];
-    NSData *dataimage = [NSData dataWithContentsOfURL:imageurl];
-    UIImage *thuimage = [UIImage imageWithData:dataimage];
+    //保存图片到沙盒缓存
+    NSString *caches = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
+    NSString *filename = [imageString lastPathComponent];
+    NSString *fullpath = [caches stringByAppendingPathComponent:filename];
+    
+    UIImage *thuimage = [[UIImage alloc]init];
+
+    NSData *dataimage = [NSData dataWithContentsOfFile:fullpath];
+    if (dataimage) {
+        thuimage = [UIImage imageWithData:dataimage];
+    }else{
+        NSURL *imageurl = [NSURL URLWithString:imageString];
+        NSData *dataimage = [NSData dataWithContentsOfURL:imageurl];
+        thuimage = [UIImage imageWithData:dataimage];
+
+    }
+
+    [dataimage writeToFile:fullpath atomically:YES];
+   
     return thuimage;
 }
 #pragma mark 点击网址跳转方法

@@ -23,6 +23,7 @@
 @property(nonatomic,strong) NSArray *historyArray;
 @property(nonatomic,strong) NSMutableArray *collecttemp;
 @property(nonatomic,strong) NSMutableArray *historytemp;
+@property(nonatomic,strong) NSMutableDictionary *imagedict;
 @property(nonatomic,strong) ZHcollectVc *zhcollectVc;
 @property(nonatomic,strong) ZHHisitoryVc *zhhistoryVc;
 @property(nonatomic,strong) ZHsearchTabVc *zhsearchtabVc;
@@ -54,14 +55,14 @@
     NSDictionary *dictionary = @{
                            @"access_token":@"2.00HZCsbG0PLui2910aa110350RA6et"
                            };
-
-    [self AFNget:str dict:dictionary];
     
-//    [NSTimer scheduledTimerWithTimeInterval:2.0 repeats:NO block:^(NSTimer * _Nonnull timer) {
-//        [self AFNget:str dict:dictionary];
-//        NSLog(@"%@",self.dictArry);
-//        [self.tableView reloadData];
-//    }];
+//    self.statusArray = [[NSMutableArray alloc]init];
+    [self AFNget:str dict:dictionary];
+
+    
+    [NSTimer scheduledTimerWithTimeInterval:1 repeats:NO block:^(NSTimer * _Nonnull timer) {
+        [self.tableView reloadData];
+    }];
     
 //    NSString *path1 = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask , YES)[0];
 //    NSString *filepath = [path1 stringByAppendingPathComponent:@"Status.data"];
@@ -83,7 +84,14 @@
     //拖拽隐藏键盘
     self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
     
-    [self.tableView reloadData];
+    //下拉刷新
+    UIRefreshControl *refreshcontrol = [[UIRefreshControl alloc]init];
+    refreshcontrol.tintColor = [UIColor grayColor];
+    refreshcontrol.attributedTitle = [[NSAttributedString alloc]initWithString:@"刷新"];
+    [refreshcontrol addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+    self.tableView.refreshControl = refreshcontrol;
+    
+    
    
 }
 
@@ -97,38 +105,29 @@
 }
 #pragma mark 网络请求
 - (void)AFNget:(NSString *)string dict:(NSDictionary *)dict{
-    //1创建队列
+//    //1创建队列
     dispatch_queue_t queue = dispatch_queue_create("队列", DISPATCH_QUEUE_CONCURRENT);
     //2封装任务
     dispatch_async(queue, ^{
-        
-        NSLog(@"%@",[NSThread currentThread]);
-        
+        __block NSMutableArray *Array = [[NSMutableArray alloc]init];
         AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
         [manager GET:string parameters:dict headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             self.dictArry = responseObject[@"statuses"];
+            NSMutableArray *temp=[NSMutableArray array];//临时数组
+            for (NSDictionary *dict in self.dictArry) {
+                ZHStatus *statuses = [ZHStatus statuseswithDict:dict];
+                //模型存入临时数组
+                [temp addObject:statuses];
+            }
+            //临时数组转数组
+             Array = temp;
+            self.statusArray = Array;
+            
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             NSLog(@"请求失败");
         }];
-        //将字典数组转模型
-        NSMutableArray *temp=[NSMutableArray array];//临时数组
-        for (NSDictionary *dict in self.dictArry) {
-            ZHStatus *statuses = [ZHStatus statuseswithDict:dict];
-            //模型存入临时数组
-            [temp addObject:statuses];
-        }
-        //临时数组转数组
-        self.statusArray = temp;
+       
     });
-
-    
-//    //储存微博
-//    NSString *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask , YES)[0];
-//    NSString *filepath = [path stringByAppendingPathComponent:@"Status.data"];
-//    NSLog(@"%@",filepath);
-//    NSData *statusdata = [NSKeyedArchiver archivedDataWithRootObject:self.statusArray];
-//    [statusdata writeToFile:filepath atomically:YES];
-    
     
     
 }
@@ -161,7 +160,7 @@
 }
 
 
-# pragma mark 右上角刷新按钮
+# pragma mark 刷新方法
 -(void)refresh{
     NSString *str = [NSString stringWithFormat:@"https://api.weibo.com/2/statuses/home_timeline.json?"];
     NSDictionary *dictionary = @{
@@ -170,6 +169,9 @@
     
     [self AFNget:str dict:dictionary];
     [self.tableView reloadData];
+    if ([self.tableView.refreshControl isRefreshing]) {
+        [self.tableView.refreshControl endRefreshing];
+    }
     
 }
 
@@ -187,10 +189,20 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     _status = [[ZHStatus alloc]init];
     _status = self.statusArray[indexPath.row];
+//     if(_status.pic_urls) {
+//                NSDictionary *dict1 = _status.pic_urls[0];
+//                _status.icon = dict1[@"thumbnail_pic"];
+//            }
     ZHTableViewCell *cell = [[ZHTableViewCell alloc]init];
     cell.status = _status;
+    cell.imageArray = [_imagedict objectForKey:cell.status.icon];
     cell = [cell setUpAllChildView];
+    
+     [_imagedict setObject:cell.imageArray forKey:_status.icon];
+    
     _cell = cell;
+    
+   
     
     NSDictionary *dict = _dictArry[indexPath.row];
     NSNotification *note = [NSNotification notificationWithName:@"collect" object:self userInfo:dict];
