@@ -9,6 +9,7 @@
 #import "ZHFirstVc.h"
 #import "ZHOAuthvc.h"
 #import "ZHStatus.h"
+#import "ZHOriginView.h"
 #import "ZHTableViewCell.h"
 #import "ZHcollectVc.h"
 #import "ZHHisitoryVc.h"
@@ -31,15 +32,16 @@
 
 @implementation ZHFirstVc
 
-
+static NSString *ID = @"weibocell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setupNavgationerBar];
     
-    
     _zhsearchtabVc = [[ZHsearchTabVc alloc]init];
     [_zhsearchtabVc.view addSubview:nil];//调用了view，viewdidload同时也调用了(解决第一次搜索要点2次的bug)
+    
+//    [self.tableView registerClass:[ZHTableViewCell class] forCellReuseIdentifier:ID];
     
     NSDictionary *dict = [[NSDictionary alloc]init];
     //取出本地储存的accessdict
@@ -60,7 +62,7 @@
     [self AFNget:str dict:dictionary];
 
     
-    [NSTimer scheduledTimerWithTimeInterval:1 repeats:NO block:^(NSTimer * _Nonnull timer) {
+    [NSTimer scheduledTimerWithTimeInterval:1.5 repeats:NO block:^(NSTimer * _Nonnull timer) {
         [self.tableView reloadData];
     }];
     
@@ -91,7 +93,12 @@
     [refreshcontrol addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     self.tableView.refreshControl = refreshcontrol;
     
-    
+    //缓存微博数据
+    NSString *path11 = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+    NSString *filepath11 = [path11 stringByAppendingPathComponent:@"status.plist"];
+//    NSLog(@"111%@",filepath11);
+    NSData *statusdata = [NSKeyedArchiver archivedDataWithRootObject:_statusArray];
+    [statusdata writeToFile:filepath11 atomically:YES];
    
 }
 
@@ -175,6 +182,11 @@
     
 }
 
+//屏幕旋转自动调用方法
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
+    [self.tableView reloadData];
+}
+
 
 #pragma mark - Table view data source
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -189,13 +201,22 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     _status = [[ZHStatus alloc]init];
     _status = self.statusArray[indexPath.row];
-//     if(_status.pic_urls) {
-//                NSDictionary *dict1 = _status.pic_urls[0];
-//                _status.icon = dict1[@"thumbnail_pic"];
-//            }
-    ZHTableViewCell *cell = [[ZHTableViewCell alloc]init];
+
+    
+//    [tableView registerClass:[ZHTableViewCell class] forCellReuseIdentifier:ID];
+    ZHTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ID];
+    if (cell == nil) {
+        cell = [[ZHTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
+    }else{
+        while ([cell.originView.subviews lastObject] !=nil) {
+            [(UIView *)[cell.originView.subviews lastObject] removeFromSuperview];
+        }
+    }
     cell.status = _status;
     cell.imageArray = [_imagedict objectForKey:cell.status.icon];
+    cell.originView = [[ZHOriginView alloc]init];
+    cell.originView.sd_layout.leftEqualToView(self.view).topEqualToView(self.view).widthIs(self.view.size.width);//heightIs(175)
+//    [cell.originView setupAutoHeightWithBottomView:<#(UIView * _Nonnull)#> bottomMargin:10];
     cell = [cell setUpAllChildView];
     
      [_imagedict setObject:cell.imageArray forKey:_status.icon];

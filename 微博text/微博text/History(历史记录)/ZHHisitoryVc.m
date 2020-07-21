@@ -52,6 +52,8 @@
     ZHTableViewCell *cell = [[ZHTableViewCell alloc]init];
     ZHStatus *status = _historyArray[indexPath.row];
     cell.status = status;
+    cell.originView = [[ZHOriginView alloc]init];
+    cell.originView.sd_layout.leftEqualToView(self.view).topEqualToView(self.view).widthIs(self.view.size.width).heightIs(175);
     [cell setUpAllChildView];
     return cell;
 }

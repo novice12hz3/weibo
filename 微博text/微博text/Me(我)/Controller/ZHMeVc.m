@@ -80,6 +80,8 @@
     status.praise_count = praise_count;
     cell.status = status;
     cell.imageString = [NSString stringWithFormat:@"https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3701847413,2165986719&fm=111&gp=0.jpg"];
+    cell.originView = [[ZHOriginView alloc]init];
+    cell.originView.sd_layout.leftEqualToView(self.view).topEqualToView(self.view).widthIs(self.view.size.width).heightIs(175);
     [cell setUpAllChildView];
     
     return cell;

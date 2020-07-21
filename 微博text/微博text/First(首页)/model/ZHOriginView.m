@@ -8,110 +8,132 @@
 
 #import "ZHOriginView.h"
 
+//#import "Masonry.h"
+
+
 @implementation ZHOriginView
-- (instancetype)initWithFrame:(CGRect)frame
-{
-    if (self = [super initWithFrame:frame]) {
-        // 添加所有子控件
-        [self setUpAllChildView];
-        
-    }
-    return self;
-}
+//- (instancetype)initWithFrame:(CGRect)frame
+//{
+//    if (self = [super initWithFrame:frame]) {
+//        // 添加所有子控件
+//        [self setUpAllChildView];
+//    }
+//    
+//    return self;
+//}
 
 // 添加所有子控件
 - (void)setUpAllChildView
 {
     // 头像
-    UIImageView *iconView = [[UIImageView alloc] init];
-    iconView.frame = CGRectMake(0, 0, 50, 50);
-    iconView.layer.masksToBounds = YES;
-    iconView.layer.cornerRadius = iconView.layer.frame.size.width/2;
-    [self addSubview:iconView];
-    _iconView = iconView;
+    _iconView = [[UIImageView alloc] init];
+//    iconView.frame = CGRectMake(0, 0, 50, 50);
+    _iconView.layer.masksToBounds = YES;
+    _iconView.layer.cornerRadius = 25;
+    _iconView.layer.borderWidth = 1;
+    _iconView.layer.borderColor = [UIColor grayColor].CGColor;
+    [self addSubview:_iconView];
+     _iconView.sd_layout.leftSpaceToView(self, 0).topSpaceToView(self, 0).widthIs(50).heightIs(50);
     
     // 昵称
-    UILabel *nameView = [[UILabel alloc] init];
-    nameView.frame = CGRectMake(50, 0, 250, 25);
-    [self addSubview:nameView];
-    _nameView = nameView;
+    _nameView = [[UILabel alloc] init];
+    [self addSubview:_nameView];
+    _nameView.sd_layout.leftSpaceToView(self, 50).topEqualToView(self).heightIs(25);
+    [_nameView setSingleLineAutoResizeWithMaxWidth:200];
+//        nameView.sd_layout.autoWidthRatio(0);
     
     // 发布时间
-    UILabel *timeView = [[UILabel alloc] init];
-    timeView.frame = CGRectMake(50, 25, 250, 25);
-    timeView.font = [UIFont systemFontOfSize:10];
-    [self addSubview:timeView];
-    _timeView = timeView;
+    _timeView = [[UILabel alloc] init];
+    _timeView.font = [UIFont systemFontOfSize:10];
+    [self addSubview:_timeView];
+    _timeView.sd_layout.leftSpaceToView(self, 50).topSpaceToView(self, 25).heightIs(25);
+    [_timeView setSingleLineAutoResizeWithMaxWidth:200];
 
     // 正文
-    UITextView *textView = [[UITextView alloc] init];
-    textView.frame = CGRectMake(0, 50, 414, 100);
-//    textView.numberOfLines = 0;
-    textView.editable = NO;
-    textView.scrollEnabled = NO;
-    [textView setFont:[UIFont systemFontOfSize:17]];
+    _textView = [[UITextView alloc] init];
+    _textView.editable = NO;
+    _textView.scrollEnabled = NO;
+    [_textView setFont:[UIFont systemFontOfSize:17]];
+    [self addSubview:_textView];
+    _textView.sd_layout.topSpaceToView(self, 50).leftEqualToView(self).widthIs(self.size.width).heightIs(100);//heightIs(100)
     
-    
-    [self addSubview:textView];
-    _textView = textView;
     
     //配图
-    UIImageView *picView1 = [[UIImageView alloc]init];
-    picView1.frame = CGRectMake(42, 150, 100, 100);
-    [self addSubview:picView1];
-    _picView1 = picView1;
-    UIImageView *picView2 = [[UIImageView alloc]init];
-    picView2.frame = CGRectMake(152, 150, 100, 100);
-    [self addSubview:picView2];
-    _picView2 = picView2;
-    UIImageView *picView3 = [[UIImageView alloc]init];
-    picView3.frame = CGRectMake(262, 150, 100, 100);
-    [self addSubview:picView3];
-    _picView3 = picView3;
+    _picView1 = [[UIImageView alloc]init];
+    _picView1.tag = 1;
+    [self addSubview:_picView1];
+    _picView1.sd_layout.topSpaceToView(self, 150).leftSpaceToView(self, 20).widthIs(100).heightIs(100);
+    _picView2 = [[UIImageView alloc]init];
+    _picView2.tag = 2;
+    [self addSubview:_picView2];
+    _picView2.sd_layout.topSpaceToView(self, 150).leftSpaceToView(self, (self.size.width-40)/3+20).widthIs(100).heightIs(100);
+    _picView3 = [[UIImageView alloc]init];
+    _picView3.tag = 3;
+    [self addSubview:_picView3];
+    _picView3.sd_layout.topSpaceToView(self, 150).leftSpaceToView(self, 2*(self.size.width-40)/3+20).widthIs(100).heightIs(100);
+    
+//    _picView4 = [[UIImageView alloc]init];
+//    _picView4.tag = 4;
+//    [self addSubview:_picView4];
+//    _picView4.sd_layout.topSpaceToView(_picView1, 110).leftSpaceToView(self, 20).widthIs(100).heightIs(100);
+//    _picView5 = [[UIImageView alloc]init];
+//    _picView5.tag = 5;
+//    [self addSubview:_picView5];
+//    _picView5.sd_layout.topSpaceToView(_picView1, 110).leftSpaceToView(self, (self.size.width-40)/3+20).widthIs(100).heightIs(100);
+//    _picView6 = [[UIImageView alloc]init];
+//    _picView6.tag = 6;
+//    [self addSubview:_picView6];
+//    _picView6.sd_layout.topSpaceToView(_picView1, 110).leftSpaceToView(self, 2*(self.size.width-40)/3+20).widthIs(100).heightIs(100);
+//    
+//    _picView7 = [[UIImageView alloc]init];
+//    _picView7.tag = 7;
+//    [self addSubview:_picView7];
+//    _picView7.sd_layout.topSpaceToView(_picView4, 110).leftSpaceToView(self, 20).widthIs(100).heightIs(100);
+//    _picView8 = [[UIImageView alloc]init];
+//    _picView8.tag = 8;
+//    [self addSubview:_picView8];
+//    _picView8.sd_layout.topSpaceToView(_picView4, 110).leftSpaceToView(self, (self.size.width-40)/3+20).widthIs(100).heightIs(100);
+//    _picView9 = [[UIImageView alloc]init];
+//    _picView9.tag = 9;
+//    [self addSubview:_picView9];
+//    _picView9.sd_layout.topSpaceToView(_picView4, 110).leftSpaceToView(self, 2*(self.size.width-40)/3+20).widthIs(100).heightIs(100);
     
     //转发
-    UIImageView *sendView = [[UIImageView alloc]init];
-    sendView.frame = CGRectMake(44,250 , 25, 25);
-    sendView.image = [UIImage imageNamed:@"send"];
-    [self addSubview:sendView];
-    _sendvView = sendView;
-    UILabel *sendlabel = [[UILabel alloc]init];
-    sendlabel.frame = CGRectMake(69, 250, 50, 25);
-    [self addSubview:sendlabel];
-    _sendlabel = sendlabel;
+    _sendView = [[UIImageView alloc]init];
+    _sendView.image = [UIImage imageNamed:@"send"];
+    [self addSubview:_sendView];
+    _sendView.sd_layout.leftSpaceToView(self, 44).topSpaceToView(self, 250).widthIs(25).heightIs(25);
+    _sendlabel = [[UILabel alloc]init];
+    _sendlabel.frame = CGRectMake(69, 250, 50, 25);
+    [self addSubview:_sendlabel];
+    _sendlabel.sd_layout.leftSpaceToView(_sendView, 25).topSpaceToView(self, 250).heightIs(25);
+    [_sendlabel setSingleLineAutoResizeWithMaxWidth:100];
     
     //评论
-    UIImageView *commentView = [[UIImageView alloc]init];
-    commentView.frame =CGRectMake(182, 250, 25, 25);
-    commentView.image = [UIImage imageNamed:@"comment"];
-    [self addSubview:commentView];
-    _commentView = commentView;
-    UILabel *commentlabel = [[UILabel alloc]init];
-    commentlabel.frame = CGRectMake(207, 250, 50, 25);
-    [self addSubview:commentlabel];
-    _commmentlabel = commentlabel;
+    _commentView = [[UIImageView alloc]init];
+    _commentView.image = [UIImage imageNamed:@"comment"];
+    [self addSubview:_commentView];
+    _commentView.sd_layout.leftSpaceToView(self, 44+(self.size.width-88)/3).topSpaceToView(self, 250).widthIs(25).heightIs(25);
+    _commentlabel = [[UILabel alloc]init];
+    [self addSubview:_commentlabel];
+    _commentlabel.sd_layout.leftSpaceToView(_commentView, 25).topSpaceToView(self, 250).heightIs(25);
+    [_commentlabel setSingleLineAutoResizeWithMaxWidth:100];
     
     //点赞
-    UIImageView *praiseView = [[UIImageView alloc]init];
-    praiseView.frame =CGRectMake(320, 250, 25, 25);
-    praiseView.image = [UIImage imageNamed:@"praise"];
-    [self addSubview:praiseView];
-    _praiseView = praiseView;
-    UILabel *praiselabel = [[UILabel alloc]init];
-    praiselabel.frame = CGRectMake(345, 250, 50, 25);
-    [self addSubview:praiselabel];
-    _praiselabel = praiselabel;
-    
+    _praiseView = [[UIImageView alloc]init];
+    _praiseView.image = [UIImage imageNamed:@"praise"];
+    [self addSubview:_praiseView];
+    _praiseView.sd_layout.leftSpaceToView(self, 44+2*(self.size.width-88)/3).topSpaceToView(self, 250).widthIs(25).heightIs(25);
+    _praiselabel = [[UILabel alloc]init];
+    [self addSubview:_praiselabel];
+    _praiselabel.sd_layout.leftSpaceToView(_praiseView, 25).topSpaceToView(self, 250).heightIs(25);
+    [_praiselabel setSingleLineAutoResizeWithMaxWidth:100];
     //收藏按钮
-    UIButton *collectbtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    collectbtn.frame = CGRectMake(364, 0, 50, 50);
-    [collectbtn setTitle:@"收藏" forState:UIControlStateNormal];
-    [collectbtn setImage:[UIImage imageNamed:@"收藏 d"] forState:UIControlStateNormal];
-//    [collectbtn setImage:[UIImage imageNamed:@"收藏 "] forState:UIControlStateSelected];
-//    [collectbtn addTarget:self action:@selector(collect) forControlEvents:UIControlEventTouchUpInside];
-    _collectbtn = collectbtn;
-    [self addSubview:collectbtn];
-    
+    _collectbtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_collectbtn setTitle:@"收藏" forState:UIControlStateNormal];
+    [_collectbtn setImage:[UIImage imageNamed:@"收藏 d"] forState:UIControlStateNormal];
+    [self addSubview:_collectbtn];
+    _collectbtn.sd_layout.topEqualToView(self).rightSpaceToView(self, 20).widthIs(50).heightIs(50);
     _iscollect = NO;
     
 
@@ -127,42 +149,5 @@
     
     
 }
-
-#pragma mark 收藏按钮方法
-//- (void)collect{
-//    _iscollect = !_iscollect;
-//    if (_iscollect) {
-//        [_collectbtn setImage:[UIImage imageNamed:@"收藏"] forState:UIControlStateNormal];
-
-//        //先拿出以前储存的收藏赋值给临时收藏数组（实现收藏多个status）
-//        NSString *path =NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
-//        NSString *filepath = [path stringByAppendingPathComponent:@"collectStatus"];
-//        NSData *collectData =[NSData dataWithContentsOfFile:filepath];
-//        _collecttemp = [NSKeyedUnarchiver unarchiveObjectWithData:collectData];
-//        if (_collecttemp == nil) {
-//            _collecttemp = [NSMutableArray arrayWithCapacity:0];;
-//        }
-//        NSLog(@"1111%@",_status.text);
-//        [_collecttemp addObject:_status];
-//        _collectArray = _collecttemp;
-////        归档
-//       
-//        NSData *arrayData  = [NSKeyedArchiver archivedDataWithRootObject:_collectArray];
-//        if ([arrayData writeToFile:filepath atomically:YES]) {
-//            NSLog(@"归档成功");
-//        }
-//    }else{
-//        [_collectbtn setImage:[UIImage imageNamed:@"收藏 d"] forState:UIControlStateNormal];
-//    }
-//
-//    [_zhcollectVc.tableView reloadData];
-//}
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
 
 @end
