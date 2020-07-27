@@ -28,6 +28,7 @@
 @property(nonatomic,strong) ZHcollectVc *zhcollectVc;
 @property(nonatomic,strong) ZHHisitoryVc *zhhistoryVc;
 @property(nonatomic,strong) ZHsearchTabVc *zhsearchtabVc;
+@property(nonatomic,strong) NSMutableArray *cellArray;
 @end
 
 @implementation ZHFirstVc
@@ -37,6 +38,10 @@ static NSString *ID = @"weibocell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setupNavgationerBar];
+    
+    if (self.cellArray == nil) {
+        self.cellArray = [NSMutableArray arrayWithCapacity:0];
+    }
     
     _zhsearchtabVc = [[ZHsearchTabVc alloc]init];
     [_zhsearchtabVc.view addSubview:nil];//调用了view，viewdidload同时也调用了(解决第一次搜索要点2次的bug)
@@ -55,23 +60,11 @@ static NSString *ID = @"weibocell";
 
     NSString *str = [NSString stringWithFormat:@"https://api.weibo.com/2/statuses/home_timeline.json?"];
     NSDictionary *dictionary = @{
-                           @"access_token":@"2.00HZCsbG0PLui2910aa110350RA6et"
+                           @"access_token":@"2.00HZCsbG0PLui2910aa110350RA6et",
                            };
     
 //    self.statusArray = [[NSMutableArray alloc]init];
     [self AFNget:str dict:dictionary];
-
-    
-    [NSTimer scheduledTimerWithTimeInterval:1.5 repeats:NO block:^(NSTimer * _Nonnull timer) {
-        [self.tableView reloadData];
-    }];
-    
-//    NSString *path1 = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask , YES)[0];
-//    NSString *filepath = [path1 stringByAppendingPathComponent:@"Status.data"];
-//    NSData *statusdata = [NSData dataWithContentsOfFile:filepath];
-//    self.statusArray = [NSKeyedUnarchiver unarchiveObjectWithData:statusdata];
-//    NSLog(@"%lu",_statusArray.count);
-//
     
     
     //搜索
@@ -112,10 +105,7 @@ static NSString *ID = @"weibocell";
 }
 #pragma mark 网络请求
 - (void)AFNget:(NSString *)string dict:(NSDictionary *)dict{
-//    //1创建队列
-    dispatch_queue_t queue = dispatch_queue_create("队列", DISPATCH_QUEUE_CONCURRENT);
-    //2封装任务
-    dispatch_async(queue, ^{
+
         __block NSMutableArray *Array = [[NSMutableArray alloc]init];
         AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
         [manager GET:string parameters:dict headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -129,15 +119,16 @@ static NSString *ID = @"weibocell";
             //临时数组转数组
              Array = temp;
             self.statusArray = Array;
+            [self.tableView reloadData];
             
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             NSLog(@"请求失败");
         }];
-       
-    });
+    
     
     
 }
+
 
 # pragma mark searchBar delegate
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
@@ -190,41 +181,35 @@ static NSString *ID = @"weibocell";
 
 #pragma mark - Table view data source
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-//    NSLog(@"222");
-//    if (self.statusArray.count == 0) {
-//        return 1;
-//    }else{
+
         return self.statusArray.count;
-//    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     _status = [[ZHStatus alloc]init];
     _status = self.statusArray[indexPath.row];
 
-    
-//    [tableView registerClass:[ZHTableViewCell class] forCellReuseIdentifier:ID];
     ZHTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ID];
     if (cell == nil) {
         cell = [[ZHTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
     }else{
-        while ([cell.originView.subviews lastObject] !=nil) {
-            [(UIView *)[cell.originView.subviews lastObject] removeFromSuperview];
+        while ([cell.contentView.subviews lastObject] !=nil) {
+            [(UIView *)[cell.contentView.subviews lastObject] removeFromSuperview];
         }
     }
     cell.status = _status;
     cell.imageArray = [_imagedict objectForKey:cell.status.icon];
     cell.originView = [[ZHOriginView alloc]init];
-    cell.originView.sd_layout.leftEqualToView(self.view).topEqualToView(self.view).widthIs(self.view.size.width);//heightIs(175)
-//    [cell.originView setupAutoHeightWithBottomView:<#(UIView * _Nonnull)#> bottomMargin:10];
+    cell.contentView.sd_layout.leftEqualToView(self.view).topEqualToView(self.view).widthIs(self.view.size.width).autoHeightRatio(0);
+    cell.contentView.backgroundColor = [UIColor blueColor];
     cell = [cell setUpAllChildView];
     
-     [_imagedict setObject:cell.imageArray forKey:_status.icon];
+
+    [_imagedict setObject:cell.imageArray forKey:_status.icon];
     
     _cell = cell;
-    
-   
-    
+    [self.cellArray addObject:cell];
+        
     NSDictionary *dict = _dictArry[indexPath.row];
     NSNotification *note = [NSNotification notificationWithName:@"collect" object:self userInfo:dict];
     [[NSNotificationCenter defaultCenter]postNotification:note];
@@ -233,7 +218,9 @@ static NSString *ID = @"weibocell";
 }
 //cell的高度
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 285;
+    ZHTableViewCell *cell = self.cellArray[indexPath.row];
+    
+    return cell.Height;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{

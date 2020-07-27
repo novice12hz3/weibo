@@ -17,11 +17,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
-    self.window.backgroundColor = [UIColor yellowColor];
-    
-    ZHTabBarController *tabvc = [[ZHTabBarController alloc]init];
-    tabvc.view.backgroundColor = [UIColor redColor];
-    
+    _window.backgroundColor = [UIColor whiteColor];
+    ZHTabBarController *tabvc = [[ZHTabBarController alloc]init];    
     //设置窗口的根控制器
     self.window.rootViewController = tabvc;
     [self.window makeKeyAndVisible];

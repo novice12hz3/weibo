@@ -18,7 +18,6 @@
     return _placeHolderLabel;
 }
 
-
 - (void)setPlaceHolder:(NSString *)placeHolder{
     _placeHolder = placeHolder;
     self.placeHolderLabel.text = placeHolder;
@@ -26,12 +25,5 @@
     [self.placeHolderLabel sizeToFit];
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
-
+ 
 @end

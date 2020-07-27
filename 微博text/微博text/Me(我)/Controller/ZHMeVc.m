@@ -12,14 +12,19 @@
 #import "ZHTableViewCell.h"
 @interface ZHMeVc ()
 @property(nonatomic,strong) ZHWriteVc *ZHwritevc;
-@property(nonatomic,strong) NSArray *textArry;
+@property(nonatomic,strong) NSArray *Array;
 @property(nonatomic,strong) NSMutableArray *temp;
+@property(nonatomic,strong) NSMutableArray *cellArray;
 @end
+static NSString *ID = @"personweibocell";
 
 @implementation ZHMeVc
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    if (self.cellArray == nil) {
+        self.cellArray = [NSMutableArray arrayWithCapacity:0];
+    }
     //发微博按钮
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
     [btn setImage:[UIImage imageNamed:@"加号"] forState:UIControlStateNormal];
@@ -40,8 +45,10 @@
     
     //取出本地储存的textArry
     NSString *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
-    NSString *filePath = [path stringByAppendingPathComponent:@"textArry.plist"];
-    _textArry = [NSArray arrayWithContentsOfFile:filePath];
+    NSString *filePath = [path stringByAppendingPathComponent:@"Array.plist"];
+    NSData *data = [NSData dataWithContentsOfFile:filePath];
+    _Array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+//    _Array = [NSArray arrayWithContentsOfFile:filePath];
 }
 
 #pragma mask 跳转发微博控制器方法
@@ -63,13 +70,20 @@
 #pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return _textArry.count;
+    return _Array.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    ZHTableViewCell *cell = [[ZHTableViewCell alloc]init];
+    ZHTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ID];
+    if (cell == nil) {
+        cell = [[ZHTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
+    }else{
+        while ([cell.contentView.subviews lastObject] !=nil) {
+            [(UIView *)[cell.contentView.subviews lastObject] removeFromSuperview];
+        }
+    }
     ZHStatus *status = [[ZHStatus alloc]init];
-    NSDictionary *dict =_textArry[indexPath.row];
+    NSDictionary *dict =_Array[indexPath.row];
     status.text = dict[@"text"];
     //写死评论数点赞数转发数
     NSString *reposts_count = @"0";
@@ -79,17 +93,44 @@
     NSString *praise_count =  @"0";
     status.praise_count = praise_count;
     cell.status = status;
-    cell.imageString = [NSString stringWithFormat:@"https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3701847413,2165986719&fm=111&gp=0.jpg"];
-    cell.originView = [[ZHOriginView alloc]init];
-    cell.originView.sd_layout.leftEqualToView(self.view).topEqualToView(self.view).widthIs(self.view.size.width).heightIs(175);
-    [cell setUpAllChildView];
+    cell.imageString = [NSString stringWithFormat:@"https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3701847413,2165986719&fm=111&gp=0.jpg"];    cell.contentView.sd_layout.leftEqualToView(self.view).topEqualToView(self.view).widthIs(self.view.size.width).autoHeightRatio(0);
     
+     NSMutableArray *imageArray = dict[@"image"];
+    cell.imageArray = imageArray;
+    
+    [cell setUpAllChildView];
+
+   
+    
+
+//    NSInteger imageCount = cell.contentView.subviews.count-11;//已添加的图片数
+//    NSInteger j = 0;
+//    while (imageCount< imageArray.count) {
+//        NSInteger i = (imageCount+1)%3;
+//        if (i==0) {
+//            i = 3;
+//        }
+//        if (imageCount<3) {
+//            j=1;
+//        }else{
+//            if(imageCount<6){j=2;}else{j=3;}
+//        }
+//        UIImageView *imageView = [[UIImageView alloc]init];
+//        imageView.image = imageArray[imageCount];
+//        [cell.contentView addSubview:imageView];
+//        imageView.sd_layout.leftSpaceToView(self.view, 45+(i-1)*110).topSpaceToView(cell.textView, 110*(j-1)).heightIs(100).widthIs(100);
+//        imageCount+= 1;
+//
+//    }
+    
+    [self.cellArray addObject:cell];
     return cell;
     
 }
 //cell的高度
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 285;
+    ZHTableViewCell *cell = self.cellArray[indexPath.row];
+    return cell.Height;
 }
 
 
@@ -98,72 +139,20 @@
     NSDictionary *dic = [noti userInfo];
     if (_temp == nil) {
         _temp  = [[NSMutableArray alloc]init];
-        for (int i=0; i<_textArry.count; i++) {
-            [_temp addObject:_textArry[i]];
+        for (int i=0; i<_Array.count; i++) {
+            [_temp addObject:_Array[i]];
         }
     }
     [_temp addObject:dic];
-    _textArry = _temp;
+    _Array = _temp;
     
     //本地沙盒储存
     NSString *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
-    NSString *filePath = [path stringByAppendingPathComponent:@"textArry.plist"];
-    [_textArry writeToFile:filePath atomically:YES];
+    NSString *filePath = [path stringByAppendingPathComponent:@"Array.plist"];
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:_Array];
+    [data writeToFile:filePath atomically:YES];
     [self.tableView reloadData];
 }
 
-/*
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
-    
-    // Configure the cell...
-    
-    return cell;
-}
-*/
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

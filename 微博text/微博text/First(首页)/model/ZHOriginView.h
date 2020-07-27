@@ -41,6 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) ZHcollectVc *zhcollectVc;
 @property (nonatomic, strong) ZHStatus *status;
 @property (nonatomic, strong) NSDictionary *statusdict;//储存当前status数据的字典
+@property NSInteger imagecount;
 @property BOOL iscollect;
 - (void)setUpAllChildView;
 @end

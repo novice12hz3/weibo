@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ZHWriteVc : UIViewController
+@interface ZHWriteVc : UIViewController<UINavigationControllerDelegate,UIImagePickerControllerDelegate>
 
 @end
 

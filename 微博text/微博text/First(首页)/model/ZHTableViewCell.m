@@ -13,194 +13,169 @@
 
 
 - (instancetype)setUpAllChildView{
-    [_originView setUpAllChildView];
+//    [_originView setUpAllChildView];
+    dispatch_queue_t queue = dispatch_queue_create("下载图片1", DISPATCH_QUEUE_CONCURRENT);
     
-    //cell的高度自适应
-//    [self.contentView sd_addSubviews:@[_originView.nameView,_originView.image]];
-    //用户头像
-    if (_status.user[@"avatar_hd"]!=nil) {
-        _imageString = _status.user[@"avatar_hd"];
-    }
-//    _imageString = _status.user[@"avatar_hd"];
-    UIImage *thuimage = [self getthuimage:_imageString];
-    _originView.iconView.image = thuimage;
-    //用户昵称
-    if (_status.user[@"screen_name"]!=nil) {
-        _originView.nameView.text = _status.user[@"screen_name"];
-    }else{
-        _originView.nameView.text = [NSString stringWithFormat:@"不吃香菜"];
-    }
-    [_originView.nameView updateLayout];
-    //发布时间
-    _originView.timeView.text = _status.created_at;
-    //正文
-    _originView.textView.text = _status.text;
-    _originView.textView.selectable = YES;
-    _originView.textView.delegate = self;
-    _originView.textView.dataDetectorTypes =UIDataDetectorTypeLink;//自动识别网址
-    //转发数
-    _originView.sendlabel.text =[NSString stringWithFormat:@"%@",_status.reposts_count];
-    //评论数
-    _originView.commentlabel.text = [NSString stringWithFormat:@"%@",_status.comments_count];
-    //点赞数
-    _originView.praiselabel.text = [NSString stringWithFormat:@"%@",_status.praise_count];
-    //配图
-    if (_imageArray) {
-            _originView.picView1.image = _imageArray[0];
-            _originView.picView2.image = _imageArray[1];
-            _originView.picView3.image = _imageArray[2];
-        if (_imageArray.count>3) {
-            _originView.picView4.image = _imageArray[3];
-            _originView.picView5.image = _imageArray[4];
-            _originView.picView6.image = _imageArray[5];}
-        if (_imageArray.count>6) {
-            _originView.picView7.image = _imageArray[6];
-            _originView.picView8.image = _imageArray[7];
-            _originView.picView9.image = _imageArray[8];}
-        
-        
-    }else{
-    
-        if (_status.pic_urls.count==0) {
-            _originView.textView.frame = CGRectMake(0, 50, 414, 200);
-            _originView.textView.text = _status.text;
-        }
-        if (_status.pic_urls.count>=1 ) {
-            dispatch_queue_t queue = dispatch_queue_create("下载图片1", DISPATCH_QUEUE_CONCURRENT);
-            dispatch_async(queue, ^{
-                NSDictionary *dict = self.status.pic_urls[0];
-                NSString *picstr1 = dict[@"thumbnail_pic"];
-                self.originView.image = [self getthuimage:picstr1];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    self.originView.picView1.image = self.originView.image;
-                    [self.imageArray addObject:self.originView.picView1.image];
-                });
-            });
-        }
-        if (_status.pic_urls.count>=2){
-            dispatch_queue_t queue = dispatch_queue_create("下载图片2", DISPATCH_QUEUE_CONCURRENT);
-            dispatch_async(queue, ^{
-                NSDictionary *dict = self.status.pic_urls[1];
-                NSString *picstr2 = dict[@"thumbnail_pic"];
-                self.originView.image = [self getthuimage:picstr2];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    self.originView.picView2.image = self.originView.image;
-                    [self.imageArray addObject:self.originView.picView2.image];
-                });
-            });
-        }
-        
-        if (_status.pic_urls.count>=3) {
-            dispatch_queue_t queue = dispatch_queue_create("下载图片3", DISPATCH_QUEUE_CONCURRENT);
-            dispatch_async(queue, ^{
-                NSDictionary *dict = self.status.pic_urls[2];
-                NSString *picstr3 = dict[@"thumbnail_pic"];
-                self.originView.image = [self getthuimage:picstr3];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    self.originView.picView3.image =  self.originView.image;
-                    [self.imageArray addObject:self.originView.picView3.image];
-                });
-            });
-//            if (_status.pic_urls.count <4) {
-//                for (UIView *subview in self.subviews) {
-//                    if (subview.tag >3) {[subview removeFromSuperview];} }
-//            }
-        }
-//
-//        if (_status.pic_urls.count>=4) {
-//            dispatch_queue_t queue = dispatch_queue_create("下载图片4", DISPATCH_QUEUE_CONCURRENT);
-//            dispatch_async(queue, ^{
-//                NSDictionary *dict = self.status.pic_urls[3];
-//                NSString *picstr4 = dict[@"thumbnail_pic"];
-//                self.originView.image = [self getthuimage:picstr4];
-//                dispatch_async(dispatch_get_main_queue(), ^{
-//                    self.originView.picView4.image =  self.originView.image;
-//                    [self.imageArray addObject:self.originView.picView4.image];
-//                });
-//            });
-//                           }
-//
-//        if (_status.pic_urls.count>=5) {
-//            dispatch_queue_t queue = dispatch_queue_create("下载图片4", DISPATCH_QUEUE_CONCURRENT);
-//            dispatch_async(queue, ^{
-//                NSDictionary *dict = self.status.pic_urls[4];
-//                NSString *picstr5 = dict[@"thumbnail_pic"];
-//                self.originView.image = [self getthuimage:picstr5];
-//                dispatch_async(dispatch_get_main_queue(), ^{
-//                    self.originView.picView5.image =  self.originView.image;
-//                    [self.imageArray addObject:self.originView.picView5.image];
-//                });
-//            });
-//        }
-//
-//        if (_status.pic_urls.count>=6) {
-//            dispatch_queue_t queue = dispatch_queue_create("下载图片4", DISPATCH_QUEUE_CONCURRENT);
-//            dispatch_async(queue, ^{
-//                NSDictionary *dict = self.status.pic_urls[5];
-//                NSString *picstr6 = dict[@"thumbnail_pic"];
-//                self.originView.image = [self getthuimage:picstr6];
-//                dispatch_async(dispatch_get_main_queue(), ^{
-//                    self.originView.picView6.image =  self.originView.image;
-//                    [self.imageArray addObject:self.originView.picView6.image];
-//                });
-//            });
-//        }
-//
-//        if (_status.pic_urls.count <7) {
-//            for (UIView *subview in self.subviews) {
-//                if (subview.tag >6) {[subview removeFromSuperview];} }
-//        }
-//
-//        if (_status.pic_urls.count>=7) {
-//            dispatch_queue_t queue = dispatch_queue_create("下载图片7", DISPATCH_QUEUE_CONCURRENT);
-//            dispatch_async(queue, ^{
-//                NSDictionary *dict = self.status.pic_urls[6];
-//                NSString *picstr7 = dict[@"thumbnail_pic"];
-//                self.originView.image = [self getthuimage:picstr7];
-//                dispatch_async(dispatch_get_main_queue(), ^{
-//                    self.originView.picView7.image =  self.originView.image;
-//                    [self.imageArray addObject:self.originView.picView7.image];
-//                });
-//            });
-//        }
-//
-//        if (_status.pic_urls.count>=8) {
-//            dispatch_queue_t queue = dispatch_queue_create("下载图片4", DISPATCH_QUEUE_CONCURRENT);
-//            dispatch_async(queue, ^{
-//                NSDictionary *dict = self.status.pic_urls[7];
-//                NSString *picstr8 = dict[@"thumbnail_pic"];
-//                self.originView.image = [self getthuimage:picstr8];
-//                dispatch_async(dispatch_get_main_queue(), ^{
-//                    self.originView.picView8.image =  self.originView.image;
-//                    [self.imageArray addObject:self.originView.picView8.image];
-//                });
-//            });
-//        }
-//
-//        if (_status.pic_urls.count>=9) {
-//            dispatch_queue_t queue = dispatch_queue_create("下载图片9", DISPATCH_QUEUE_CONCURRENT);
-//            dispatch_async(queue, ^{
-//                NSDictionary *dict = self.status.pic_urls[8];
-//                NSString *picstr9 = dict[@"thumbnail_pic"];
-//                self.originView.image = [self getthuimage:picstr9];
-//                dispatch_async(dispatch_get_main_queue(), ^{
-//                    self.originView.picView9.image =  self.originView.image;
-//                    [self.imageArray addObject:self.originView.picView9.image];
-//                });
-//            });
-//        }
-        
-        
-        
-    }
-    
+  
+    //控件创建
+    UIImageView *iconView = [[UIImageView alloc] init];
+    UILabel *nameView = [[UILabel alloc] init];
+    UILabel *timeView = [[UILabel alloc] init];
+    UILabel *textView = [[UILabel alloc] init];
+    UIImageView *sendView = [[UIImageView alloc]init];
+    UILabel *sendlabel = [[UILabel alloc]init];
+    UIImageView *praiseView = [[UIImageView alloc]init];
+    UILabel *praiselabel = [[UILabel alloc]init];
+    UIImageView *commentView = [[UIImageView alloc]init];
+    UILabel *commentlabel = [[UILabel alloc]init];
 
-        [self addSubview:self.originView];
+
+    UIButton *collectbtn = [UIButton buttonWithType:UIButtonTypeCustom];
+
+    // 头像
+    iconView.layer.masksToBounds = YES;
+    iconView.layer.cornerRadius = 25;
+    iconView.layer.borderWidth = 1;
+    iconView.layer.borderColor = [UIColor grayColor].CGColor;
+    [self.contentView addSubview:iconView];
+    iconView.sd_layout.leftSpaceToView(self.contentView, 0).topSpaceToView(self.contentView, 0).widthIs(50).heightIs(50);
+    
+    if (self.status.user[@"avatar_hd"]!=nil) {
+        self.imageString = self.status.user[@"avatar_hd"];
+    }
+    dispatch_async(queue, ^{
+        UIImage *thuimage = [self getthuimage:self.imageString];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            iconView.image = thuimage;
+        });
+    });
+    //发布时间
+    timeView.font = [UIFont systemFontOfSize:10];
+    [self.contentView addSubview:timeView];
+    timeView.sd_layout.leftSpaceToView(iconView, 0).topSpaceToView(nameView, 0).heightIs(25);
+    [timeView setSingleLineAutoResizeWithMaxWidth:200];
+    timeView.text = self.status.created_at;
+    //正文
+    [textView setFont:[UIFont systemFontOfSize:17]];
+    [self.contentView addSubview:textView];
+    textView.sd_layout.topSpaceToView(iconView, 0).leftEqualToView(self.contentView).widthIs(self.contentView.size.width).autoHeightRatio(0).maxHeightIs(200);//heightIs(100)
+    [textView updateLayout];
+    textView.text = self.status.text;
+    [textView updateLayout];
+//    textView.selectable = YES;
+//    textView.delegate = self;
+//    textView.dataDetectorTypes =UIDataDetectorTypeLink;//自动识别网址
+    _textView = textView;
+    //用户昵称
+    [self.contentView addSubview:nameView];
+    nameView.sd_layout.leftSpaceToView(iconView, 0).topEqualToView(self.contentView).heightIs(25);
+    [nameView setSingleLineAutoResizeWithMaxWidth:200];
+        if (self.status.user[@"screen_name"]!=nil) {
+            nameView.text = self.status.user[@"screen_name"];
+        }else{
+            nameView.text = [NSString stringWithFormat:@"不吃香菜"];
+        }
+        [nameView updateLayout];
+    
+    //配图
+     NSInteger j = 0;
+     NSInteger imageCount = self.contentView.subviews.count-4;//已添加的图片数
+    if (_imageArray) {
+        
+       
+        while (imageCount< _imageArray.count) {
+            NSInteger i = (imageCount+1)%3;
+            if (i==0) {i = 3;}
+            if (imageCount<3) {
+                j=1;
+            }else{
+                if(imageCount<6){j=2;}else{j=3;}
+            }
+            UIImageView *imageView = [[UIImageView alloc]init];
+            imageView.image = _imageArray[imageCount];
+            [self.contentView addSubview:imageView];
+            imageView.sd_layout.leftSpaceToView(self.contentView, 45+(i-1)*110).topSpaceToView(textView, 110*(j-1)).heightIs(100).widthIs(100);
+            imageCount+= 1;
+            if (imageCount == _imageArray.count) {
+                self.lastImageView = imageView;
+            }
+        }
+    }else{
+    while (imageCount< _status.pic_urls.count) {
+        NSInteger i = (imageCount+1)%3;
+        if (i==0) {
+            i = 3;
+        }
+        if (imageCount<3) {
+            j=1;
+        }else{
+                if(imageCount<6){j=2;}else{j=3;}
+        }
+        UIImageView *imageView = [[UIImageView alloc]init];
+        [self.contentView addSubview:imageView];
+        imageView.sd_layout.leftSpaceToView(self.contentView, 45+(i-1)*110).topSpaceToView(textView, 110*(j-1)).heightIs(100).widthIs(100);
+        NSDictionary *dict = self.status.pic_urls[imageCount];
+        NSString *picstr = dict[@"thumbnail_pic"];
+        dispatch_async(queue, ^{
+            UIImage *image = [[UIImage alloc]init];
+            image = [self getthuimage:picstr];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                imageView.image = image;
+//                [self.imageArray addObject:self.image];
+            });
+        });
+        
+        imageCount+= 1;
+        if (imageCount == _status.pic_urls.count) {
+            self.lastImageView = imageView;
+        }
+    }
+    }
+    //转发数
+    sendView.image = [UIImage imageNamed:@"send"];
+    [self.contentView addSubview:sendView];
+    sendView.sd_layout.leftSpaceToView(self.contentView, 44).topSpaceToView(self.lastImageView, 20).widthIs(25).heightIs(25);
+    [self.contentView addSubview:sendlabel];
+    sendlabel.sd_layout.leftSpaceToView(sendView, 0).topSpaceToView(self.lastImageView, 20).heightIs(25);
+    [sendlabel setSingleLineAutoResizeWithMaxWidth:100];
+    sendlabel.text =[NSString stringWithFormat:@"%@",self.status.reposts_count];
+    //评论数
+    commentView.image = [UIImage imageNamed:@"comment"];
+    [self.contentView addSubview:commentView];
+    commentView.sd_layout.leftSpaceToView(self.contentView, 44+(self.size.width-88)/3).topSpaceToView(self.lastImageView, 20).widthIs(25).heightIs(25);
+    [self.contentView addSubview:commentlabel];
+    commentlabel.sd_layout.leftSpaceToView(commentView, 0).topSpaceToView(self.lastImageView, 20).heightIs(25);
+    [commentlabel setSingleLineAutoResizeWithMaxWidth:100];
+    commentlabel.text = [NSString stringWithFormat:@"%@",self.status.comments_count];
+    //点赞数
+    praiseView.image = [UIImage imageNamed:@"praise"];
+    [self.contentView addSubview:praiseView];
+    praiseView.sd_layout.leftSpaceToView(self.contentView, 44+2*(self.size.width-88)/3).topSpaceToView(self.lastImageView, 20).widthIs(25).heightIs(25);
+    [self.contentView addSubview:praiselabel];
+    praiselabel.sd_layout.leftSpaceToView(praiseView, 0).topSpaceToView(self.lastImageView, 20).heightIs(25);
+    [praiselabel setSingleLineAutoResizeWithMaxWidth:100];
+    praiselabel.text = [NSString stringWithFormat:@"%@",self.status.praise_count];
+    
+    if (self.contentView.subviews.count == 10) {//没图的情况下
+        sendView.sd_layout.leftSpaceToView(self.contentView, 44).topSpaceToView(textView, 20).widthIs(25).heightIs(25);
+        sendlabel.sd_layout.leftSpaceToView(sendView, 0).topSpaceToView(textView, 20).heightIs(25);
+        commentView.sd_layout.leftSpaceToView(self.contentView, 44+(self.size.width-88)/3).topSpaceToView(textView, 20).widthIs(25).heightIs(25);
+        commentlabel.sd_layout.leftSpaceToView(commentView, 0).topSpaceToView(textView, 20).heightIs(25);
+        praiseView.sd_layout.leftSpaceToView(self.contentView, 44+2*(self.size.width-88)/3).topSpaceToView(textView, 20).widthIs(25).heightIs(25);
+        praiselabel.sd_layout.leftSpaceToView(praiseView, 0).topSpaceToView(textView, 20).heightIs(25);
+    }
     
 //    //监听收藏按钮
-    [self.originView.collectbtn addTarget:self action:@selector(collect) forControlEvents:UIControlEventTouchUpInside];
+    [collectbtn setTitle:@"收藏" forState:UIControlStateNormal];
+[collectbtn setImage:[UIImage imageNamed:@"收藏 d"] forState:UIControlStateNormal];
+    [self.contentView addSubview:collectbtn];
+    collectbtn.sd_layout.topEqualToView(self).rightSpaceToView(self, 20).widthIs(50).heightIs(50);
+//    iscollect = NO;
+    [collectbtn addTarget:self action:@selector(collect) forControlEvents:UIControlEventTouchUpInside];
     
     
+    
+    self.Height = textView.height+(CGFloat)j*110+75+25;
     return self;
 }
 #pragma mark 根据网络地址请求网络图片
@@ -210,27 +185,28 @@
     NSString *filename = [imageString lastPathComponent];
     NSString *fullpath = [caches stringByAppendingPathComponent:filename];
     
-    UIImage *thuimage = [[UIImage alloc]init];
+    __block UIImage *thuimage = [[UIImage alloc]init];
 
     NSData *dataimage = [NSData dataWithContentsOfFile:fullpath];
+    
     if (dataimage) {
         thuimage = [UIImage imageWithData:dataimage];
     }else{
-        NSURL *imageurl = [NSURL URLWithString:imageString];
-        NSData *dataimage = [NSData dataWithContentsOfURL:imageurl];
-        thuimage = [UIImage imageWithData:dataimage];
-
+            NSURL *imageurl = [NSURL URLWithString:imageString];
+            NSData *dataimage = [NSData dataWithContentsOfURL:imageurl];
+            thuimage = [UIImage imageWithData:dataimage];
+            [dataimage writeToFile:fullpath atomically:YES];
     }
 
-    [dataimage writeToFile:fullpath atomically:YES];
    
     return thuimage;
+
 }
 #pragma mark 点击网址跳转方法
-- (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange interaction:(UITextItemInteraction)interaction{
-    NSLog(@"%@",URL);
-    return YES;
-}
+//- (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange interaction:(UITextItemInteraction)interaction{
+//    NSLog(@"%@",URL);
+//    return YES;
+//}
 #pragma mark 收藏按钮的方法
 - (void)collect{
     _originView.iscollect = !_originView.iscollect;
