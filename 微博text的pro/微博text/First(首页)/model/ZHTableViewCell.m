@@ -11,7 +11,6 @@
 @implementation ZHTableViewCell
 #pragma mark 自定义tableviewcell
 
-
 - (instancetype)setUpAllChildView{
     dispatch_queue_t queue = dispatch_queue_create("下载图片1", DISPATCH_QUEUE_CONCURRENT);
     
@@ -59,9 +58,6 @@
     textView.sd_layout.topSpaceToView(iconView, 0).leftEqualToView(self.contentView).widthIs(self.contentView.size.width).autoHeightRatio(0).maxHeightIs(200);
     textView.text = self.status.text;
     [textView updateLayout];
-//    textView.selectable = YES;
-//    textView.delegate = self;
-//    textView.dataDetectorTypes =UIDataDetectorTypeLink;//自动识别网址
     _textView = textView;
     self.Height = 0;
     //用户昵称
@@ -123,15 +119,13 @@
                 if (imageCount == _status.pic_urls.count) {
                     self.lastImageView = imageView;
                 }
-                if (imageCount == 9) {
-                    break;
-                }
+                if (imageCount == 9) {break;}
             }
 //        }
     
     }
 //    视频
-    if (self.status.videoURLs == nil) {
+    if (self.status.videoURLs.length == 0) {
     }else{
         
         NSURL *videoURL = [NSURL URLWithString:self.status.videoURLs];
@@ -141,12 +135,10 @@
         [self.contentView addSubview:self.avPlayerVC.view];
         self.avPlayerVC.view.sd_layout.leftSpaceToView(self.contentView, 0).topSpaceToView(textView, 20).heightIs(200).widthIs(414);
         self.lastImageView = self.avPlayerVC.view;
-        self.avPlayerVC.showsPlaybackControls = YES;
+//        self.avPlayerVC.showsPlaybackControls = YES;
         self.Height = 220;
     }
     
-    self.avPlayerVC.delegate = self;
-   
     //转发数
     sendView.image = [UIImage imageNamed:@"send"];
     [self.contentView addSubview:sendView];
@@ -171,7 +163,9 @@
     praiselabel.sd_layout.leftSpaceToView(praiseView, 0).topSpaceToView(self.lastImageView, 20).heightIs(25);
     [praiselabel setSingleLineAutoResizeWithMaxWidth:100];
     praiselabel.text = [NSString stringWithFormat:@"%@",self.status.praise_count];
-    if (self.status.pic_urls == nil&& self.status.videoURLs ==nil&&_imageArray == nil) {//没图的情况下
+    
+    
+    if (self.status.pic_urls == nil && self.status.videoURLs.length == 0&&_imageArray == nil) {//没图的情况下
         sendView.sd_layout.leftSpaceToView(self.contentView, 44).topSpaceToView(textView, 20).widthIs(25).heightIs(25);
         sendlabel.sd_layout.leftSpaceToView(sendView, 0).topSpaceToView(textView, 20).heightIs(25);
         commentView.sd_layout.leftSpaceToView(self.contentView, 44+(self.contentView.size.width-88)/3).topSpaceToView(textView, 20).widthIs(25).heightIs(25);
@@ -189,10 +183,10 @@
     [collectbtn addTarget:self action:@selector(collect) forControlEvents:UIControlEventTouchUpInside];
     self.collectbtn = collectbtn;
     
-    
-    
+    [self setupAutoHeightWithBottomView:sendView bottomMargin:10];
     
     self.Height = self.Height+textView.height+(CGFloat)j*110+75+25;
+    
     return self;
 }
 #pragma mark 根据网络地址请求网络图片

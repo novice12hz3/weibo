@@ -60,7 +60,7 @@ static NSString *ID = @"weibocell";
     }
     ZHStatus *status = _collectArray[indexPath.row];
     cell.status = status;
-    cell.contentView.sd_layout.leftEqualToView(self.view).topEqualToView(self.view).widthIs(self.view.size.width).autoHeightRatio(0);
+    cell.contentView.sd_layout.leftEqualToView(self.view).topEqualToView(self.view).widthIs(self.view.size.width);
     [cell setUpAllChildView];
     [self.cellArray addObject:cell];
     return cell;
@@ -68,9 +68,8 @@ static NSString *ID = @"weibocell";
 }
 //cell的高度
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    ZHTableViewCell *cell = self.cellArray[indexPath.row];
-    
-    return cell.Height;
+    return [self.tableView cellHeightForIndexPath:indexPath cellContentViewWidth:414 tableView:self.tableView];
+
 }
 
 

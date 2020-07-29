@@ -11,6 +11,7 @@
 #import "ZHcollectVc.h"
 #import "ZHMeVc.h"
 #import "ZHHisitoryVc.h"
+#import "ZHTagVc.h"
 @interface ZHTabBarController ()
 - (void)getChildrenvc:(UIViewController *)vc image:(UIImage *)image selectedimage:(UIImage *)selectedimage title:(NSString *)title;
 @end
@@ -26,7 +27,14 @@
     ZHFirstVc *first = [[ZHFirstVc alloc]init];
     [self getChildrenvc:first image:[UIImage imageNamed:@"first"] selectedimage:[UIImage imageNamed:@"first d"] title:@"首页"];
     
-    //消息
+    //推荐页
+    ZHTagVc *Tag = [[ZHTagVc alloc]init];
+    Tag.tabBarItem.title = @"推荐";
+    Tag.tabBarItem.image = [UIImage imageNamed:@"推荐"];
+    [self addChildViewController:Tag];
+    
+    
+    //收藏
     ZHcollectVc *collect = [[ZHcollectVc alloc]init];
     [self getChildrenvc:collect image:[UIImage imageNamed:@"收藏"] selectedimage:[UIImage imageNamed:@"收藏"] title:@"收藏"];
     
@@ -53,15 +61,5 @@
     [self addChildViewController:nav];
     
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

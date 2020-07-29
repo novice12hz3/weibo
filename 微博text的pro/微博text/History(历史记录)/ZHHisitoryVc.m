@@ -23,6 +23,7 @@ static NSString *ID = @"weibocell";
     [super viewDidLoad];
     
     NSString *path =NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+    NSLog(@"%@",path);
     NSString *filepath = [path stringByAppendingPathComponent:@"historyArray.data"];
     NSData *historydata = [NSData dataWithContentsOfFile:filepath];
     _historyArray = [NSKeyedUnarchiver unarchiveObjectWithData:historydata];
@@ -34,7 +35,6 @@ static NSString *ID = @"weibocell";
     if (_cellArray ==nil) {
         _cellArray = [NSMutableArray arrayWithCapacity:0];
     }
-//    self.tableView.dataSource =self;
     //通知刷新tableview
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(refresh) name:@"刷新历史" object:self.zhfirstVc];
     [self.tableView reloadData];
@@ -66,7 +66,7 @@ static NSString *ID = @"weibocell";
         }
     }
     
-    cell.contentView.sd_layout.leftEqualToView(self.view).topEqualToView(self.view).widthIs(self.view.size.width).autoHeightRatio(0);
+    cell.contentView.sd_layout.leftEqualToView(self.view).topEqualToView(self.view).widthIs(self.view.size.width);
     cell.status = _historyArray[indexPath.row];
     
     [cell setUpAllChildView];
@@ -75,9 +75,7 @@ static NSString *ID = @"weibocell";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    ZHTableViewCell *cell = self.cellArray[indexPath.row];
-    
-    return cell.Height;
+    return [self.tableView cellHeightForIndexPath:indexPath cellContentViewWidth:414 tableView:self.tableView];
 }
 
 

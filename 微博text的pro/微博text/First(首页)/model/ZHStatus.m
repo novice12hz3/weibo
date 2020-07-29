@@ -29,7 +29,7 @@
     status.praise_count = praise_count;
     status.icon = status.thumbnail_pic;
     if ([dict[@"videoUrls"] isEqual:[NSNull null]]) {
-        status.videoURLs = nil;
+        status.videoURLs = [NSString stringWithFormat:@""];
     }else{
         NSArray *Array = dict[@"videoUrls"];
         status.videoURLs = Array[0];

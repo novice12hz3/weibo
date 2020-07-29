@@ -57,6 +57,7 @@
 		E2E7243E24C3422800AA0B15 /* MASViewConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = E2E7243324C3422800AA0B15 /* MASViewConstraint.m */; };
 		E2E7243F24C3422800AA0B15 /* MASViewAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = E2E7243424C3422800AA0B15 /* MASViewAttribute.m */; };
 		E2E7244024C3422800AA0B15 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E2E7243524C3422800AA0B15 /* Info.plist */; };
+		E2F885D524D1087400F2E837 /* ZHTagVc.m in Sources */ = {isa = PBXBuildFile; fileRef = E2F885D424D1087400F2E837 /* ZHTagVc.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -184,6 +185,8 @@
 		E2E7243324C3422800AA0B15 /* MASViewConstraint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MASViewConstraint.m; sourceTree = "<group>"; };
 		E2E7243424C3422800AA0B15 /* MASViewAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MASViewAttribute.m; sourceTree = "<group>"; };
 		E2E7243524C3422800AA0B15 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E2F885D324D1087400F2E837 /* ZHTagVc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZHTagVc.h; sourceTree = "<group>"; };
+		E2F885D424D1087400F2E837 /* ZHTagVc.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZHTagVc.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -409,6 +412,7 @@
 				E2B1FD832465A78400D96988 /* OAuth授权 */,
 				E2C4D0B624630D4000D66572 /* Me(我) */,
 				E2C4D0B524630CFF00D66572 /* First(首页) */,
+				E2F885D224D107FA00F2E837 /* 推荐 */,
 				E2C4D0B424630CFC00D66572 /* collect(收藏) */,
 				E2C4D0B324630CD700D66572 /* History(历史记录) */,
 				E2C4D0AE2462F87800D66572 /* TabBar */,
@@ -514,6 +518,15 @@
 				E2E7243524C3422800AA0B15 /* Info.plist */,
 			);
 			path = Masonry;
+			sourceTree = "<group>";
+		};
+		E2F885D224D107FA00F2E837 /* 推荐 */ = {
+			isa = PBXGroup;
+			children = (
+				E2F885D324D1087400F2E837 /* ZHTagVc.h */,
+				E2F885D424D1087400F2E837 /* ZHTagVc.m */,
+			);
+			path = "推荐";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -672,6 +685,7 @@
 				E2D215C52485202C00660ABA /* ZHsearchTabVc.m in Sources */,
 				E2A5F04224CD8C5C00421D2A /* ZHSearchVc.m in Sources */,
 				E2C4D0B12462F93400D66572 /* ZHTabBarController.m in Sources */,
+				E2F885D524D1087400F2E837 /* ZHTagVc.m in Sources */,
 				E2E7243624C3422800AA0B15 /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
 				E2BA246D24C7386500BB9F16 /* WKWebView+AFNetworking.m in Sources */,
 				E2E7243E24C3422800AA0B15 /* MASViewConstraint.m in Sources */,

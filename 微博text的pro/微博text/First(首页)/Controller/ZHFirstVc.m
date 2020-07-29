@@ -30,12 +30,20 @@
 @property(nonatomic,strong) ZHsearchTabVc *zhsearchtabVc;
 @property(nonatomic,strong) NSMutableArray *cellArray;
 @property (nonatomic,strong) AVPlayerViewController *avPlayerVC;
-@property (nonatomic,strong) UITableView *tab ;
+//@property (nonatomic,strong) UITableView *tab ;
 @end
 
 @implementation ZHFirstVc
 
 static NSString *ID = @"weibocell";
+
+- (AVPlayerViewController *)avPlayerVC{
+    if (self.avPlayerVC == nil) {
+        self.avPlayerVC = [[AVPlayerViewController alloc]init];
+    }
+    
+    return self.avPlayerVC;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -65,7 +73,7 @@ static NSString *ID = @"weibocell";
                            @"uid":@"2803301701"
                            };
     
-    [self AFNget:str dict:dictionary];
+//    [self AFNget:str dict:dictionary];
     
     
     //搜索
@@ -90,10 +98,14 @@ static NSString *ID = @"weibocell";
     //缓存微博数据
     NSString *path11 = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
     NSString *filepath11 = [path11 stringByAppendingPathComponent:@"status.plist"];
-//    NSLog(@"111%@",filepath11);
-    NSData *statusdata = [NSKeyedArchiver archivedDataWithRootObject:_statusArray];
-    [statusdata writeToFile:filepath11 atomically:YES];
-        
+    NSData *data = [NSData dataWithContentsOfFile:filepath11];
+    self.statusArray = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    [self.tableView reloadData];
+    
+    
+//    self.tableView
+//    [self.view setFrame:CGRectMake(0, 150, 414, self.tableView.frame.size.height)];
+    
    
 }
 
@@ -125,6 +137,11 @@ static NSString *ID = @"weibocell";
             }
             //临时数组转数组
             self.statusArray = temp;
+            //缓存微博数据
+            NSString *path11 = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+            NSString *filepath11 = [path11 stringByAppendingPathComponent:@"status.plist"];
+            NSData *statusdata = [NSKeyedArchiver archivedDataWithRootObject:self.statusArray];
+            [statusdata writeToFile:filepath11 atomically:YES];
             [self.tableView reloadData];
             
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -184,7 +201,8 @@ static NSString *ID = @"weibocell";
 
 - (void) discover{
     ZHSearchVc *vc = [[ZHSearchVc alloc]init];
-    vc.nav = self.navigationController;
+    
+    //    [self.view addSubview:_searchBar];
     vc.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:vc animated:YES];
 }
@@ -214,14 +232,10 @@ static NSString *ID = @"weibocell";
     }
     cell.status = _status;
     cell.imageArray = [_imagedict objectForKey:cell.status.icon];
-    cell.contentView.sd_layout.leftEqualToView(self.view).topEqualToView(self.view).widthIs(self.view.size.width).autoHeightRatio(0);
+    cell.contentView.sd_layout.leftEqualToView(self.view).topEqualToView(self.view).widthIs(self.view.size.width);
     
-//    cell.avPlayerVC = self.avPlayerVC;
     cell = [cell setUpAllChildView];
-    if (cell.status.videoURLs !=nil) {
-//        [self addChildViewController:cell.avPlayerVC];
-
-    }
+    
     _cell = cell;
     [self.cellArray addObject:cell];
 
@@ -236,17 +250,18 @@ static NSString *ID = @"weibocell";
 }
 //cell的高度
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    ZHTableViewCell *cell = self.cellArray[indexPath.row];
-    return cell.Height;
+    return [self.tableView cellHeightForIndexPath:indexPath cellContentViewWidth:414 tableView:self.tableView];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     ZHStatus *status = [[ZHStatus alloc]init];
     status = _statusArray[indexPath.row];
 
+    [self.avPlayerVC.player pause];
     ZHTableViewCell *cell = self.cellArray[indexPath.row];
     [cell.avPlayerVC.player play];
-
+    self.avPlayerVC = cell.avPlayerVC;
+    
     NSString *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
     NSString *filepath = [path stringByAppendingPathComponent:@"historyArray.data"];
     //先取出以前储存的历史记录数组（实现储存多个历史status）
@@ -269,6 +284,7 @@ static NSString *ID = @"weibocell";
     [[NSNotificationCenter defaultCenter]postNotification:note];
 
 }
+
 
 //底部加载
 - (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView{

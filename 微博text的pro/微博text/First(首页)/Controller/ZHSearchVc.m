@@ -23,19 +23,21 @@
     _searchBar = [[UISearchBar alloc]init];
     _searchBar.placeholder = @"请输入文字";
     _searchBar.frame = CGRectMake(50, 150, 300, 50);
+//    UIView *titleView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 300, 50)];
+//    [titleView addSubview:_searchBar];
     [self.view addSubview:_searchBar];
+//    self.navigationController.navigationItem.titleView = titleView;
     _searchBar.delegate = self;
-    
-    
-    if (_historytext == nil) {
-        _historytext = [NSMutableArray arrayWithCapacity:0];
-    }
     
     //本地储存历史搜索
     NSString *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
     NSString *filePath = [path stringByAppendingPathComponent:@"historytext.plist"];
-    NSData *data = [NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
+    NSData *data = [NSData dataWithContentsOfFile:filePath];
     _historytext = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    NSLog(@"%@",_historytext);
+    if (_historytext == nil) {
+        _historytext = [NSMutableArray arrayWithCapacity:0];
+    }
     
     
     UITableView *tab = [[UITableView alloc]initWithFrame:CGRectMake(0, 200, 414, 300)];
@@ -52,29 +54,33 @@
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.historytext];
     [data writeToFile:filePath atomically:YES];
     
-    NSString *string = [NSString stringWithFormat:@"http://api02.idataapi.cn:8000/post/weibo?"];
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc]init];
-    [dict setObject:@"fp40srNpCn5fvwAMQj0qsmLcDrhX6ypPySRBGjC8fRoPRCQexYc29kN0CegiKLMp" forKey: @"apikey"];
-    [dict setObject:@"hot" forKey:@"type"];
-    [dict setObject:searchBar.text forKey:@"kw"];
+    NSString *string = [NSString stringWithFormat:@"http://api01.idataapi.cn:8000/post/weibo?"];
+    NSMutableDictionary *dict1 = [[NSMutableDictionary alloc]init];
+    [dict1 setObject:@"fp40srNpCn5fvwAMQj0qsmLcDrhX6ypPySRBGjC8fRoPRCQexYc29kN0CegiKLMp" forKey: @"apikey"];
+    [dict1 setObject:@"hot" forKey:@"type"];
+    [dict1 setObject:searchBar.text forKey:@"kw"];
+    
+    NSDictionary *dict = [[NSDictionary alloc]init];
+    dict = dict1;
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     [manager GET:string parameters:dict headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSArray *dictArry = responseObject[@"data"];
-        ZHsearchTabVc *Vc = [[ZHsearchTabVc alloc]init];
         NSMutableArray *temp=[NSMutableArray array];//临时数组
         for (NSDictionary *dict in dictArry) {
             ZHStatus *statuses = [ZHStatus statuseswithDict:dict];
             //模型存入临时数组
             [temp addObject:statuses];
         }
-        //临时数组转数组
+        //跳转控制器
+        ZHsearchTabVc *Vc = [[ZHsearchTabVc alloc]init];
         Vc.statusArray = temp;
-        [self presentViewController:Vc animated:YES completion:nil];
+//        [self presentViewController:Vc animated:YES completion:nil];
+        [self.navigationController pushViewController:Vc animated:YES];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"请求失败");
     }];
-    
+
 }
 #pragma mark tableviewdatsource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -95,7 +101,32 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     self.searchBar.text = _historytext[indexPath.row];
-    [self searchBarTextDidEndEditing:self.searchBar];
+    NSString *string = [NSString stringWithFormat:@"http://api01.idataapi.cn:8000/post/weibo?"];
+    NSMutableDictionary *dict1 = [[NSMutableDictionary alloc]init];
+    [dict1 setObject:@"fp40srNpCn5fvwAMQj0qsmLcDrhX6ypPySRBGjC8fRoPRCQexYc29kN0CegiKLMp" forKey: @"apikey"];
+    [dict1 setObject:@"hot" forKey:@"type"];
+    [dict1 setObject:self.searchBar.text forKey:@"kw"];
+    
+    NSDictionary *dict = [[NSDictionary alloc]init];
+    dict = dict1;
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager GET:string parameters:dict headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSArray *dictArry = responseObject[@"data"];
+        NSMutableArray *temp=[NSMutableArray array];//临时数组
+        for (NSDictionary *dict in dictArry) {
+            ZHStatus *statuses = [ZHStatus statuseswithDict:dict];
+            //模型存入临时数组
+            [temp addObject:statuses];
+        }
+        //跳转控制器
+        ZHsearchTabVc *Vc = [[ZHsearchTabVc alloc]init];
+        Vc.statusArray = temp;
+        //        [self presentViewController:Vc animated:YES completion:nil];
+        [self.navigationController pushViewController:Vc animated:YES];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"请求失败");
+    }];
 }
 
 @end

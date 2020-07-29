@@ -51,9 +51,8 @@ static NSString *ID = @"weibocell";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    ZHTableViewCell *cell = self.cellArray[indexPath.row];
-    
-    return cell.Height;
+    return [self.tableView cellHeightForIndexPath:indexPath cellContentViewWidth:414 tableView:self.tableView];
+
 }
 
 
