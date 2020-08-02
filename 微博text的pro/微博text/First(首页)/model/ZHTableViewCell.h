@@ -11,6 +11,7 @@
 #import "ZHcollectVc.h"
 #import <AVFoundation/AVFoundation.h>
 #import <AVKit/AVKit.h>
+#import <MediaPlayer/MediaPlayer.h>
 NS_ASSUME_NONNULL_BEGIN
 @class ZHOriginView;
 @class ZHcollectVc;

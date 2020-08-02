@@ -129,6 +129,23 @@
     }else{
         
         NSURL *videoURL = [NSURL URLWithString:self.status.videoURLs];
+        
+        //avplayer方法
+//        AVPlayerItem *avplayerItem = [[AVPlayerItem alloc]initWithURL:videoURL];
+//        self.player = [[AVPlayer alloc]initWithPlayerItem:avplayerItem];
+//        AVPlayerLayer *avLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
+//        avLayer.videoGravity  = AVLayerVideoGravityResizeAspect;
+//        [self.layer addSublayer:avLayer];
+//        self.layer.frame = CGRectMake(, <#CGFloat y#>, <#CGFloat width#>, <#CGFloat height#>)
+//
+        
+        //mpmovieplayercontroll
+//        self.avPlayerVC = [[MPMoviePlayerController alloc]initWithContentURL:videoURL];
+//        [self.contentView addSubview:self.avPlayerVC.view];
+//        self.avPlayerVC.view.sd_layout.leftSpaceToView(self.contentView, 0).topSpaceToView(textView, 20).heightIs(200).widthIs(414);
+//        self.avPlayerVC.controlStyle = MPMovieRepeatModeNone;
+        
+//        //avplayercontrolview方法
         self.player = [[AVPlayer alloc]initWithURL:videoURL];
         self.avPlayerVC = [[AVPlayerViewController alloc]init];
         self.avPlayerVC.player = self.player;

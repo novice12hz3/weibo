@@ -28,9 +28,7 @@
 @property(nonatomic,strong) ZHcollectVc *zhcollectVc;
 @property(nonatomic,strong) ZHHisitoryVc *zhhistoryVc;
 @property(nonatomic,strong) ZHsearchTabVc *zhsearchtabVc;
-@property(nonatomic,strong) NSMutableArray *cellArray;
 @property (nonatomic,strong) AVPlayerViewController *avPlayerVC;
-//@property (nonatomic,strong) UITableView *tab ;
 @end
 
 @implementation ZHFirstVc
@@ -49,10 +47,6 @@ static NSString *ID = @"weibocell";
     [super viewDidLoad];
     [self setupNavgationerBar];
     
-    if (self.cellArray == nil) {
-        self.cellArray = [NSMutableArray arrayWithCapacity:0];
-    }
-    
     _zhsearchtabVc = [[ZHsearchTabVc alloc]init];
     [_zhsearchtabVc.view addSubview:nil];//调用了view，viewdidload同时也调用了(解决第一次搜索要点2次的bug)
     
@@ -68,7 +62,7 @@ static NSString *ID = @"weibocell";
 
     NSString *str = [NSString stringWithFormat:@"http://api02.idataapi.cn:8000/post/weibo?"];
     NSDictionary *dictionary = @{
-                           @"apikey":@"fp40srNpCn5fvwAMQj0qsmLcDrhX6ypPySRBGjC8fRoPRCQexYc29kN0CegiKLMp",
+                           @"apikey":@"SDT4UxVF4pF2wenM7Dd076viivgzudDfdnJ7VsN8wzkb9Mk3u8rhsyi1qFLIRjyt",
                            @"kw":@"%E5%8C%97%E4%BA%AC",
                            @"uid":@"2803301701"
                            };
@@ -237,14 +231,6 @@ static NSString *ID = @"weibocell";
     cell = [cell setUpAllChildView];
     
     _cell = cell;
-    [self.cellArray addObject:cell];
-
-//    [_imagedict setObject:cell.imageArray forKey:_status.icon];
-    
-        
-//    NSDictionary *dict = _dictArry[indexPath.row];
-//    NSNotification *note = [NSNotification notificationWithName:@"collect" object:self userInfo:dict];
-//    [[NSNotificationCenter defaultCenter]postNotification:note];
     
     return cell;
 }
@@ -258,9 +244,6 @@ static NSString *ID = @"weibocell";
     status = _statusArray[indexPath.row];
 
     [self.avPlayerVC.player pause];
-    ZHTableViewCell *cell = self.cellArray[indexPath.row];
-    [cell.avPlayerVC.player play];
-    self.avPlayerVC = cell.avPlayerVC;
     
     NSString *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
     NSString *filepath = [path stringByAppendingPathComponent:@"historyArray.data"];
@@ -291,7 +274,7 @@ static NSString *ID = @"weibocell";
     if (scrollView.contentSize.height+20 <scrollView.frame.size.height+scrollView.contentOffset.y) {
         NSString *str = [NSString stringWithFormat:@"http://api02.idataapi.cn:8000/post/weibo?"];
         NSDictionary *dictionary = @{
-                                     @"apikey":@"fp40srNpCn5fvwAMQj0qsmLcDrhX6ypPySRBGjC8fRoPRCQexYc29kN0CegiKLMp",
+                                     @"apikey":@"SDT4UxVF4pF2wenM7Dd076viivgzudDfdnJ7VsN8wzkb9Mk3u8rhsyi1qFLIRjyt",
                                      @"kw":@"%E5%8C%97%E4%BA%AC",
                                      @"uid":@"2803301701",
                                      @"pageToken":@"2"

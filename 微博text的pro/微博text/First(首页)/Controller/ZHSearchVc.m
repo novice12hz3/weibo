@@ -103,7 +103,7 @@
     self.searchBar.text = _historytext[indexPath.row];
     NSString *string = [NSString stringWithFormat:@"http://api01.idataapi.cn:8000/post/weibo?"];
     NSMutableDictionary *dict1 = [[NSMutableDictionary alloc]init];
-    [dict1 setObject:@"fp40srNpCn5fvwAMQj0qsmLcDrhX6ypPySRBGjC8fRoPRCQexYc29kN0CegiKLMp" forKey: @"apikey"];
+    [dict1 setObject:@"SDT4UxVF4pF2wenM7Dd076viivgzudDfdnJ7VsN8wzkb9Mk3u8rhsyi1qFLIRjyt" forKey: @"apikey"];
     [dict1 setObject:@"hot" forKey:@"type"];
     [dict1 setObject:self.searchBar.text forKey:@"kw"];
     
